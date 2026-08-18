@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}
+Assessment History
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow p-4">
+
+        <h2 class="text-center mb-4">
+            Assessment History
+        </h2>
+
+        {% if assessments %}
+
+        <table class="table table-bordered table-striped">
+
+            <thead>
+
+                <tr>
+
+                    <th>Date</th>
+                    <th>Role</th>
+                    <th>Score</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for assessment in assessments %}
+
+                <tr>
+
+                    <td>{{ assessment.created_at }}</td>
+
+                    <td>{{ assessment.role }}</td>
+
+                    <td>
+                        {{ assessment.score }}/{{ assessment.total_questions }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <div class="alert alert-warning text-center">
+
+            No assessments found.
+
+        </div>
+
+        {% endif %}
+
+        <div class="text-center mt-4">{% extends "base.html" %}
+
+{% block title %}
+Assessment History
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow p-4">
+
+        <h2 class="text-center mb-4">
+            Assessment History
+        </h2>
+
+        {% if assessments %}
+
+        <table class="table table-bordered table-striped">
+
+            <thead>
+
+                <tr>
+
+                    <th>Date</th>
+                    <th>Role</th>
+                    <th>Score</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for assessment in assessments %}
+
+                <tr>
+
+                    <td>{{ assessment.created_at }}</td>
+
+                    <td>{{ assessment.role }}</td>
+
+                    <td>
+                        {{ assessment.score }}/{{ assessment.total_questions }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <div class="alert alert-warning text-center">
+
+            No assessments found.
+
+        </div>
+
+        {% endif %}
+
+        <div class="text-center mt-4">
+
+            <a href="/dashboard/" class="btn btn-primary">
+                Dashboard
+            </a>
+
+            <a href="/assessment/" class="btn btn-success">
+                Take Another Test
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+            <a href="/dashboard/" class="btn btn-primary">
+                Dashboard
+            </a>
+
+            <a href="/assessment/" class="btn btn-success">
+                Take Another Test
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

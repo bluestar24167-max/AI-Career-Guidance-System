@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+
+<h2>Edit Profile</h2>
+
+<form method="POST">
+
+{% csrf_token %}
+
+<div class="mb-3">
+<label>Education</label>
+<input type="text" name="education" class="form-control"
+value="{{ student.education }}">
+</div>
+
+<div class="mb-3">
+<label>College</label>
+<input type="text" name="college" class="form-control"
+value="{{ student.college }}">
+</div>
+
+<div class="mb-3">
+<label>Branch</label>
+<input type="text" name="branch" class="form-control"
+value="{{ student.branch }}">
+</div>
+
+<div class="mb-3">
+<label>Phone</label>
+<input type="text" name="phone" class="form-control"
+value="{{ student.phone }}">
+</div>
+
+<div class="mb-3">
+<label>City</label>
+<input type="text" name="city" class="form-control"
+value="{{ student.city }}">
+</div>
+<div class="mb-3">
+    <label>Skills</label>
+    <textarea name="skills" class="form-control" rows="3">{{ student.skills }}</textarea>
+</div>
+
+<div class="mb-3">
+    <label>Interests</label>
+    <textarea name="interests" class="form-control" rows="3">{{ student.interests }}</textarea>
+</div>
+
+<button class="btn btn-success">
+Save Changes
+</button>
+
+<a href="/profile/" class="btn btn-secondary">
+Cancel
+</a>
+
+</form>
+
+{% endblock %}

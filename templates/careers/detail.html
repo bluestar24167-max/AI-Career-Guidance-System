@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ career.title }}
+{% endblock %}
+
+{% block content %}
+
+<h2>{{ career.title }}</h2>
+
+<hr>
+
+<h4>Description</h4>
+<p>{{ career.description }}</p>
+
+<h4>Required Skills</h4>
+<p>{{ career.required_skills }}</p>
+
+<h4>Average Salary</h4>
+<p>{{ career.average_salary }}</p>
+
+<a href="/careers/" class="btn btn-secondary">
+Back to Careers
+</a>
+
+{% endblock %}

@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">
+        Welcome, {{ request.session.student_name }}
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4">
+
+            <div class="card shadow text-center">
+
+                <div class="card-body">
+
+                    <h4>👤 Profile</h4>
+
+                    <p>View and edit your profile.</p>
+
+                    <a href="/profile/" class="btn btn-primary">
+                        Open
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card shadow text-center">
+
+                <div class="card-body">
+
+                    <h4>📝 AI Assessment</h4>
+
+                    <p>Take the AI aptitude test.</p>
+
+                    <a href="/assessment/" class="btn btn-success">
+                        Start
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card shadow text-center">
+
+                <div class="card-body">
+
+                    <h4>🤖 Recommendation</h4>
+
+                    <p>View your AI career recommendation.</p>
+
+                    <a href="/careers/recommend/" class="btn btn-warning">
+                        View
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row mt-4">
+
+        <div class="col-md-4">
+
+            <div class="card shadow text-center">
+
+                <div class="card-body">
+
+                    <h4>📊 History</h4>
+
+                    <p>Assessment history.</p>
+
+                    <a href="/assessment/history/" class="btn btn-info">
+                        Open
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card shadow text-center">
+
+                <div class="card-body">
+
+                    <h4>📄 PDF Report</h4>
+
+                    <p>Download your AI report.</p>
+
+                    <a href="/careers/download-report/" class="btn btn-dark">
+                        Download
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card shadow text-center">
+
+                <div class="card-body">
+
+                    <h4>🚪 Logout</h4>
+
+                    <p>End your current session.</p>
+
+                    <a href="/logout/" class="btn btn-danger">
+                        Logout
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

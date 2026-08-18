@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Careers{% endblock %}
+
+{% block content %}
+
+<h2>Career List</h2>
+
+<table class="table table-bordered">
+
+<tr>
+    <th>Career</th>
+    <th>Salary</th>
+    <th>Action</th>
+</tr>
+
+{% for career in careers %}
+
+<tr>
+    <td>{{ career.title }}</td>
+    <td>{{ career.average_salary }}</td>
+    <td>
+        <a href="/careers/{{ career.id }}/" class="btn btn-primary btn-sm">
+            View
+        </a>
+    </td>
+</tr>
+
+{% empty %}
+
+<tr>
+    <td colspan="3">No careers available.</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endblock %}

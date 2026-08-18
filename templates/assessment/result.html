@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}
+Assessment Result
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow-lg p-4">
+
+        <h2 class="text-center text-success">
+            Aptitude Test Completed
+        </h2>
+
+        <hr>
+
+        <h4>Student Details</h4>
+
+        <table class="table table-bordered">
+
+            <tr>
+                <th width="30%">Student Name</th>
+                <td>{{ student.full_name }}</td>
+            </tr>
+
+            <tr>
+                <th>Selected Job Role</th>
+                <td>{{ role }}</td>
+            </tr>
+
+            <tr>
+                <th>Score</th>
+                <td>
+                    <strong>{{ score }}/{{ total }}</strong>
+                </td>
+            </tr>
+
+            <tr>
+                <th>Percentage</th>
+                <td>
+                    {% widthratio score total 100 %}%
+                </td>
+            </tr>
+
+        </table>
+
+        <hr>
+
+        <h4>AI Career Analysis</h4>
+
+        <div class="alert alert-info">
+
+            <pre style="white-space: pre-wrap; font-family: inherit;">
+{{ report }}
+            </pre>
+
+        </div>
+
+        <div class="text-center mt-4">
+
+            <a href="/careers/recommend/" class="btn btn-success btn-lg">
+                View Final AI Career Recommendation
+            </a>
+
+            <a href="/dashboard/" class="btn btn-secondary btn-lg">
+                Back to Dashboard
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

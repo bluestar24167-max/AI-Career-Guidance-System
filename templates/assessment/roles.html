@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}
+AI Suggested Job Roles
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="text-center mb-4">
+        {{ category }} Careers
+    </h2>
+
+    <div class="row">
+
+        {% for role in roles %}
+
+        <div class="col-md-6 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-body">
+
+                    <h4 class="card-title">
+                        {{ role.name }}
+                    </h4>
+
+                    <p class="card-text">
+                        {{ role.description }}
+                    </p>
+
+                    <a href="/assessment/test/{{ role.name|urlencode }}/"
+                       class="btn btn-success">
+                        Start Aptitude Test
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12">
+            <div class="alert alert-warning">
+                No job roles found for this category.
+            </div>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

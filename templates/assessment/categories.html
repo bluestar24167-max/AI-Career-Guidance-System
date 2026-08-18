@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}
+AI Career Categories
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="text-center mb-4">
+        🤖 AI Suggested Career Categories
+    </h2>
+
+    {% if error %}
+        <div class="alert alert-danger">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <div class="row">
+
+        {% for category in categories %}
+
+        <div class="col-md-6 mb-4">
+
+            <div class="card shadow h-100">
+
+                <div class="card-body">
+
+                    <h4 class="card-title">
+                        {{ category.name }}
+                    </h4>
+
+                    <p class="card-text">
+                        {{ category.description }}
+                    </p>
+
+                    <a href="{% url 'choose_role' category.name|urlencode %}"
+                         class="btn btn-success">
+                               Explore Roles
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12">
+
+            <div class="alert alert-warning">
+
+                No career categories found.
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

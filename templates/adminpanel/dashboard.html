@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+
+{% block title %}
+Admin Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="text-center mb-4">
+        Admin Dashboard
+    </h2>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+
+        <div class="col-md-4">
+
+            <div class="card bg-primary text-white shadow text-center">
+
+                <div class="card-body">
+
+                    <h1>{{ student_count }}</h1>
+
+                    <h5>Total Students</h5>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card bg-success text-white shadow text-center">
+
+                <div class="card-body">
+
+                    <h1>{{ assessment_count }}</h1>
+
+                    <h5>Total Assessments</h5>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card bg-warning text-dark shadow text-center">
+
+                <div class="card-body">
+
+                    <h1>{{ assessments|length }}</h1>
+
+                    <h5>Reports Generated</h5>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Student Table -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header bg-dark text-white">
+
+            <h4 class="mb-0">
+                Registered Students
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-bordered table-hover">
+
+                <thead class="table-secondary">
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Education</th>
+                        <th>Branch</th>
+                        <th>City</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for student in students %}
+
+                    <tr>
+
+                        <td>{{ student.id }}</td>
+                        <td>{{ student.full_name }}</td>
+                        <td>{{ student.email }}</td>
+                        <td>{{ student.education }}</td>
+                        <td>{{ student.branch }}</td>
+                        <td>{{ student.city }}</td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="6" class="text-center">
+                            No students registered.
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- Assessment Table -->
+
+    <div class="card shadow">
+
+        <div class="card-header bg-success text-white">
+
+            <h4 class="mb-0">
+                Assessment History
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-bordered table-hover">
+
+                <thead class="table-secondary">
+
+                    <tr>
+
+                        <th>Student</th>
+                        <th>Role</th>
+                        <th>Score</th>
+                        <th>Report</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for assessment in assessments %}
+
+                    <tr>
+
+                        <td>{{ assessment.student.full_name }}</td>
+
+                        <td>{{ assessment.role }}</td>
+
+                        <td>
+
+                            {{ assessment.score }}/{{ assessment.total_questions }}
+
+                        </td>
+
+                        <td>
+
+                            <div style="max-height:150px; overflow:auto;">
+
+                                {{ assessment.report }}
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="4" class="text-center">
+
+                            No assessments available.
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <div class="text-center mt-4">
+
+        <a href="/dashboard/" class="btn btn-primary">
+
+            Student Dashboard
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

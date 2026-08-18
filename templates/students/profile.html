@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Profile
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow p-4">
+
+        <h2 class="mb-4 text-center">
+            Student Profile
+        </h2>
+
+        <table class="table table-bordered table-striped">
+
+            <tr>
+                <th width="30%">Full Name</th>
+                <td>{{ student.full_name }}</td>
+            </tr>
+
+            <tr>
+                <th>Email</th>
+                <td>{{ student.email }}</td>
+            </tr>
+
+            <tr>
+                <th>Education</th>
+                <td>{{ student.education|default:"Not Added" }}</td>
+            </tr>
+
+            <tr>
+                <th>College</th>
+                <td>{{ student.college|default:"Not Added" }}</td>
+            </tr>
+
+            <tr>
+                <th>Branch</th>
+                <td>{{ student.branch|default:"Not Added" }}</td>
+            </tr>
+
+            <tr>
+                <th>Phone</th>
+                <td>{{ student.phone|default:"Not Added" }}</td>
+            </tr>
+
+            <tr>
+                <th>City</th>
+                <td>{{ student.city|default:"Not Added" }}</td>
+            </tr>
+
+            <tr>
+                <th>Skills</th>
+                <td>{{ student.skills|default:"Not Added" }}</td>
+            </tr>
+
+            <tr>
+                <th>Interests</th>
+                <td>{{ student.interests|default:"Not Added" }}</td>
+            </tr>
+
+        </table>
+
+        <div class="text-center mt-4">
+
+            <a href="/edit-profile/" class="btn btn-primary me-2">
+                Edit Profile
+            </a>
+
+            <a href="/careers/" class="btn btn-success me-2">
+                View Careers
+            </a>
+
+            <a href="{% url 'choose_category' %}" class="btn btn-warning me-2">
+                Start AI Career Assessment
+            </a>
+
+            <a href="/dashboard/" class="btn btn-secondary">
+                Back to Dashboard
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

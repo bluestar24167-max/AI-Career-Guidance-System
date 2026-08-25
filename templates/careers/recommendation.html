@@ -1,89 +1,30 @@
 {% extends "base.html" %}
-
-{% block title %}
-AI Career Recommendation
-{% endblock %}
-
+{% block title %}Your Career Roadmap{% endblock %}
 {% block content %}
-
-<div class="container mt-5">
-
-    <div class="card shadow-lg p-4">
-
-        <h2 class="text-center text-primary">
-            🤖 AI Career Recommendation
-        </h2>
-
-        <hr>
-
-        {% if error %}
-
-        <div class="alert alert-danger">
-            {{ error }}
-        </div>
-
-        {% else %}
-
-        <table class="table table-bordered">
-
-            <tr>
-                <th width="30%">Student</th>
-                <td>{{ student.full_name }}</td>
-            </tr>
-
-            <tr>
-                <th>Education</th>
-                <td>{{ student.education }}</td>
-            </tr>
-
-            <tr>
-                <th>Branch</th>
-                <td>{{ student.branch }}</td>
-            </tr>
-
-            <tr>
-                <th>Selected Role</th>
-                <td>{{ assessment.role }}</td>
-            </tr>
-
-            <tr>
-                <th>Aptitude Score</th>
-                <td>{{ assessment.score }}/{{ assessment.total_questions }}</td>
-            </tr>
-
-        </table>
-
-        <hr>
-
-        <h4>AI Recommendation</h4>
-
-        <div class="alert alert-info">
-
-            <pre style="white-space: pre-wrap; font-family: inherit;">
-{{ ai_response }}
-            </pre>
-
-        </div>
-
-        <div class="text-center mt-4">
-
-            <a href="/dashboard/" class="btn btn-primary">
-                Dashboard
-            </a>
-
-            <a href="/profile/" class="btn btn-secondary">
-                My Profile
-            </a>
-            <a href="/careers/download-report/" class="btn btn-success">
-                Download PDF Report
-            </a>
-
-        </div>
-
-        {% endif %}
-
+<section class="roadmap-page page-enter">
+  {% if error %}
+    <div class="alert alert-danger shadow-sm">{{ error }}</div><a href="/assessment/" class="btn btn-primary">Take assessment</a>
+  {% else %}
+    <div class="roadmap-hero">
+      <span class="eyebrow">YOUR PERSONALISED PATH</span>
+      <h1>Prepare for <span>{{ assessment.roles_label }}</span>.</h1>
+      <p>Hi {{ student.full_name }}, this is a practical six-month plan built around your goal—not just a career suggestion.</p>
+      <div class="hero-pills"><span>Assessment: {{ assessment.score }}/{{ assessment.total_questions }}</span><span>{{ student.experience_level|default:"Beginner" }} level</span><span>24-week plan</span></div>
     </div>
-
-</div>
-
+    <div class="row g-4 mt-1">
+      <div class="col-lg-8"><section class="content-card roadmap-card">
+        <div class="section-heading"><div><span class="eyebrow">WHAT TO LEARN</span><h2>Your learning roadmap</h2></div><span class="roadmap-badge">{{ roadmap.lessons|length }} stages</span></div>
+        <p class="muted">{{ roadmap.weekly_plan }}</p><div class="learning-timeline">
+          {% for lesson in roadmap.lessons %}<article class="lesson-card reveal" style="--delay: {{ forloop.counter0 }}"><div class="lesson-number">0{{ lesson.number }}</div><div class="lesson-body"><span class="lesson-duration">{{ lesson.duration }}</span><h3>{{ lesson.title }}</h3><p>{{ lesson.outcome }}</p><p><strong>Do this:</strong> {{ lesson.instructions }}</p><p><strong>Project:</strong> {{ lesson.project }}</p><a class="resource-link" href="{{ lesson.url }}" target="_blank" rel="noopener noreferrer">Learn on {{ lesson.provider }} <span aria-hidden="true">↗</span></a></div></article>{% endfor %}
+        </div>
+      </section></div>
+      <div class="col-lg-4"><aside class="sidebar-stack">
+        <section class="content-card insight-card"><span class="eyebrow">ASSESSMENT INSIGHTS</span><h2>Strengths and priority gaps</h2>{% if analysis.strengths %}<div class="skill-cloud">{% for skill in analysis.strengths %}<span>{{ skill }}</span>{% endfor %}</div>{% endif %}{% if analysis.skill_gaps %}<p class="muted mt-3 mb-2">Focus next on:</p><div class="skill-cloud">{% for skill in analysis.skill_gaps %}<span>{{ skill }}</span>{% endfor %}</div>{% endif %}</section>
+        <section class="content-card ai-summary"><span class="eyebrow">AI INSIGHT</span><h2>Why this direction</h2><div class="summary-text">{{ ai_response|linebreaksbr }}</div></section>
+        <a href="{{ roadmap.job_search_url }}" target="_blank" rel="noopener noreferrer" class="job-cta">Explore matching roles <span>→</span></a>
+      </aside></div>
+    </div>
+    <div class="roadmap-actions"><a href="/dashboard/" class="btn btn-outline-primary">Dashboard</a><a href="/edit-profile/" class="btn btn-light">Update profile</a><a href="/careers/download-report/" class="btn btn-primary">Download report <span>↓</span></a></div>
+  {% endif %}
+</section>
 {% endblock %}

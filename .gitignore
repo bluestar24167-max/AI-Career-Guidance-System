@@ -1,5 +1,87 @@
-venv/
+# ==============================
+# Python
+# ==============================
 __pycache__/
-*.pyc
-db.sqlite3
+*.py[cod]
+*$py.class
+
+# ==============================
+# Virtual Environment
+# ==============================
+venv/
+.venv/
+env/
+ENV/
+
+# ==============================
+# Environment Variables / Secrets
+# ==============================
 .env
+.env.*
+!.env.example
+
+# ==============================
+# Django
+# ==============================
+db.sqlite3
+db.sqlite3-journal
+
+# ==============================
+# Django static/media generated files
+# ==============================
+staticfiles/
+media/
+
+# ==============================
+# IDE / Editor
+# ==============================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ==============================
+# OS Generated Files
+# ==============================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==============================
+# Temporary / Cache Files
+# ==============================
+*.log
+*.tmp
+*.temp
+
+# ==============================
+# Project Build / Generated Files
+# ==============================
+presentation_build/
+AI_Powered_Career_Guidance_System_Presentation/
+*.inspect.ndjson
+
+# ==============================
+# FreeBuff / Tool Generated Files
+# ==============================
+.freebuff/
+
+# ==============================
+# Python packaging
+# ==============================
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ==============================
+# Jupyter Notebook
+# ==============================
+.ipynb_checkpoints/
+
+# ==============================
+# Coverage / Testing
+# ==============================
+.coverage
+htmlcov/
+.pytest_cache/

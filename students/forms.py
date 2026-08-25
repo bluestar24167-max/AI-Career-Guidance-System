@@ -19,7 +19,6 @@ class StudentRegistrationForm(forms.ModelForm):
             "phone",
             "skills",
             "interests",
-            "target_job",
         ]
 
         widgets = {
@@ -49,20 +48,6 @@ class StudentRegistrationForm(forms.ModelForm):
                 ("2nd Year", "2nd Year"),
                 ("3rd Year", "3rd Year"),
                 ("Final Year", "Final Year"),
-            ]),
-
-            "target_job": forms.Select(choices=[
-                ("", "Select Target Job"),
-                ("Python Developer", "Python Developer"),
-                ("Full Stack Developer", "Full Stack Developer"),
-                ("AI Engineer", "AI Engineer"),
-                ("Data Analyst", "Data Analyst"),
-                ("Data Scientist", "Data Scientist"),
-                ("Machine Learning Engineer", "Machine Learning Engineer"),
-                ("Cybersecurity Analyst", "Cybersecurity Analyst"),
-                ("Cloud Engineer", "Cloud Engineer"),
-                ("DevOps Engineer", "DevOps Engineer"),
-                ("Software Engineer", "Software Engineer"),
             ]),
 
             "skills": forms.Textarea(attrs={

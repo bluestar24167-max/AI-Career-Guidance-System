@@ -24,7 +24,8 @@ class Student(models.Model):
 
     interests = models.TextField(blank=True)
 
-    target_job = models.CharField(max_length=100, blank=True)
+    # A student can explore a cluster of related roles, not just one title.
+    target_roles = models.JSONField(default=list, blank=True)
 
     experience_level = models.CharField(
         max_length=30,

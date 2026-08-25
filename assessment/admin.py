@@ -7,7 +7,7 @@ class AssessmentAdmin(admin.ModelAdmin):
 
     list_display = (
         "student",
-        "role",
+        "roles_label",
         "score",
         "created_at"
     )

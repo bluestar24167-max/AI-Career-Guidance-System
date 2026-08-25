@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Career
 from students.models import Student
 from assessment.models import Assessment
-from ai_engine.ollama import get_career_recommendation
 from .pdf_report import download_pdf
 
 
@@ -58,12 +57,9 @@ def recommend_career(request):
             }
         )
 
-    score = f"{assessment.score}/{assessment.total_questions}"
-
-    ai_response = get_career_recommendation(
-        student,
-        score
-    )
+    ai_response = assessment.report
+    analysis = assessment.analysis or {}
+    roadmap = analysis.get("roadmap", {})
 
     return render(
         request,
@@ -71,7 +67,9 @@ def recommend_career(request):
         {
             "student": student,
             "assessment": assessment,
-            "ai_response": ai_response
+            "ai_response": ai_response,
+            "analysis": analysis,
+            "roadmap": roadmap,
         }
     )
 
@@ -92,15 +90,4 @@ def download_report(request):
     if not assessment:
         return redirect("/assessment/")
 
-    score = f"{assessment.score}/{assessment.total_questions}"
-
-    ai_response = get_career_recommendation(
-        student,
-        score
-    )
-
-    return download_pdf(
-        student,
-        assessment,
-        ai_response
-    )
+    return download_pdf(student, assessment, assessment.report)

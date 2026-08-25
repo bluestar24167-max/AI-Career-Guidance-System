@@ -2,6 +2,7 @@ from io import BytesIO
 from django.http import FileResponse
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Paragraph
+from xml.sax.saxutils import escape
 
 
 def download_pdf(student, assessment, ai_response):
@@ -26,7 +27,7 @@ def download_pdf(student, assessment, ai_response):
     story.append(Paragraph("<br/>", styles["BodyText"]))
 
     story.append(Paragraph(
-        f"<b>Selected Role:</b> {assessment.role}",
+        f"<b>Confirmed target roles:</b> {assessment.roles_label}",
         styles["BodyText"]
     ))
 
@@ -39,7 +40,7 @@ def download_pdf(student, assessment, ai_response):
 
     story.append(Paragraph("<b>AI Recommendation</b>", styles["Heading2"]))
 
-    story.append(Paragraph(ai_response.replace("\n", "<br/>"), styles["BodyText"]))
+    story.append(Paragraph(escape(ai_response).replace("\n", "<br/>"), styles["BodyText"]))
 
     doc.build(story)
 

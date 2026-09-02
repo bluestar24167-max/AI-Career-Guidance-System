@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from students.forms import StudentRegistrationForm
 from students.models import Student
+from django.contrib.auth.decorators import login_required
 
 
 def home(request):
@@ -110,3 +111,19 @@ def logout_page(request):
     request.session.flush()
 
     return redirect("/login/")
+
+@login_required
+def google_login_complete(request):
+
+    from students.models import Student
+
+    try:
+        student = Student.objects.get(email=request.user.email)
+
+        request.session["student_id"] = student.id
+        request.session["student_name"] = student.full_name
+
+        return redirect("/dashboard/")
+
+    except Student.DoesNotExist:
+        return redirect("/login/")

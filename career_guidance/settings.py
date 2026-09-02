@@ -45,7 +45,16 @@ INSTALLED_APPS = [
     'ai_engine',
     'reports',
     'adminpanel',
+        'django.contrib.sites',
+
+    # Allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
+# Django Sites Framework
+SITE_ID = 1
 
 
 MIDDLEWARE = [
@@ -54,6 +63,8 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+     # Django Allauth
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -109,6 +120,11 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+# Authentication Backends
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 
 # Internationalization
@@ -119,6 +135,38 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+# ==========================================
+# DJANGO ALLAUTH CONFIGURATION
+# ==========================================
+
+# Authentication redirects
+LOGIN_REDIRECT_URL = '/google-login-complete/'
+LOGOUT_REDIRECT_URL = '/'
+
+# Allauth account settings
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
+
+# Google OAuth settings
+SOCIALACCOUNT_LOGIN_ON_GET = False
+
+# Automatically create account after Google authentication
+SOCIALACCOUNT_AUTO_SIGNUP = True
+
+
+
+# Google OAuth Configuration
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': os.getenv('GOOGLE_CLIENT_ID'),
+            'secret': os.getenv('GOOGLE_CLIENT_SECRET'),
+            'key': ''
+        }
+    }
+}
+# Custom adapter to connect Google login with Student model
+SOCIALACCOUNT_ADAPTER = 'accounts.adapters.CustomSocialAccountAdapter'
 
 
 # Static files

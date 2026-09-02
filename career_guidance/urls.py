@@ -11,6 +11,13 @@ urlpatterns = [
     path("register/", views.register_page, name="register"),
     path("logout/", views.logout_page, name="logout"),
 
+    # Google Login Completion
+    path(
+        "google-login-complete/",
+        views.google_login_complete,
+        name="google_login_complete"
+    ),
+
     # Student
     path("dashboard/", views.dashboard, name="dashboard"),
     path("profile/", views.profile, name="profile"),
@@ -24,7 +31,10 @@ urlpatterns = [
     path("admin/", admin.site.urls),
 
     path(
-    "admin-dashboard/",
-    include("adminpanel.urls")
-),
+        "admin-dashboard/",
+        include("adminpanel.urls")
+    ),
+
+    # Django Allauth URLs
+    path("accounts/", include("allauth.urls")),
 ]

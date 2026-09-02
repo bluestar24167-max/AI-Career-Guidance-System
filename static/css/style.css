@@ -5,3 +5,77 @@
 /* Roadmap */.roadmap-hero{background:linear-gradient(125deg,#202a61 0%,#373083 57%,#5c50cb);border-radius:26px;color:#f8f9ff;overflow:hidden;padding:3.25rem;position:relative;box-shadow:0 18px 35px rgba(43,41,111,.23)}.roadmap-hero:after{background:linear-gradient(135deg,transparent 38%,rgba(133,213,255,.23));border:1px solid rgba(255,255,255,.22);border-radius:50%;content:"";height:290px;position:absolute;right:-80px;top:-110px;width:290px}.roadmap-hero h1{font-size:clamp(2rem,5vw,3.7rem);max-width:700px;position:relative;z-index:1}.roadmap-hero h1 span{color:#9bdfff}.roadmap-hero p{font-size:1.08rem;max-width:620px;opacity:.83;position:relative;z-index:1}.roadmap-hero .eyebrow{color:#b7dfff}.hero-pills{display:flex;flex-wrap:wrap;gap:.65rem;margin-top:1.6rem;position:relative;z-index:1}.hero-pills span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);border-radius:999px;font-size:.85rem;padding:.43rem .78rem}.section-heading{align-items:center;display:flex;justify-content:space-between}.section-heading h2{margin:0}.roadmap-badge{background:#efedff;border-radius:999px;color:var(--primary);font-size:.76rem;font-weight:700;padding:.42rem .75rem}.learning-timeline{margin-top:1.5rem}.lesson-card{display:flex;gap:1rem;position:relative;padding:0 0 1.45rem}.lesson-card:not(:last-child):before{background:#d9d8f9;content:"";height:calc(100% - 38px);left:18px;position:absolute;top:38px;width:2px}.lesson-number{align-items:center;background:linear-gradient(135deg,#eceaff,#d9f0ff);border-radius:12px;color:var(--primary);display:flex;font-weight:700;height:38px;justify-content:center;min-width:38px;z-index:1}.lesson-body{background:#fbfbff;border:1px solid #eceef9;border-radius:14px;flex:1;padding:1.1rem 1.2rem}.lesson-body h3{font-size:1.07rem;margin:.25rem 0}.lesson-body p{color:var(--muted);font-size:.92rem;margin-bottom:.75rem}.lesson-duration{color:#8991a7;font-size:.74rem;font-weight:700;text-transform:uppercase}.resource-link,.text-link{color:var(--primary);font-size:.88rem;font-weight:700;text-decoration:none}.resource-link:hover,.text-link:hover{color:#31239c;text-decoration:underline}.sidebar-stack{display:grid;gap:1rem}.insight-card h2{margin-bottom:1rem}.skill-cloud{display:flex;flex-wrap:wrap;gap:.5rem}.skill-cloud span{background:#edf7ff;border-radius:8px;color:#2073bb;font-size:.82rem;font-weight:600;padding:.42rem .6rem}.ai-summary{max-height:325px;overflow:auto}.summary-text{color:#626c80;font-size:.88rem;line-height:1.6}.job-cta{align-items:center;background:linear-gradient(125deg,#62a7f7,#5755ce);border-radius:15px;color:#fff;display:flex;font-family:"Space Grotesk";font-weight:700;justify-content:space-between;padding:1rem 1.15rem;text-decoration:none}.job-cta:hover{color:#fff;transform:translateY(-2px)}.job-cta span{font-size:1.4rem}.roadmap-actions{display:flex;flex-wrap:wrap;gap:.7rem;justify-content:flex-end;margin-top:1.5rem}
 @media(max-width:767px){.app-main{padding-top:1.8rem}.home-hero{grid-template-columns:1fr;min-height:0}.hero-copy h1{font-size:2.9rem}.hero-visual{height:300px}.career-orb{height:120px;left:calc(50% - 60px);top:calc(50% - 60px);width:120px}.orbit-a{height:230px;left:calc(50% - 115px);top:calc(50% - 115px);width:230px}.orbit-b{height:310px;left:calc(50% - 155px);top:calc(50% - 155px);width:310px}.home-cta,.dashboard-heading,.profile-hero{align-items:flex-start;flex-direction:column;padding:1.7rem}.home-cta h2{font-size:1.65rem}.auth-layout,.profile-grid,.action-grid{grid-template-columns:1fr}.auth-aside{border-radius:22px 22px 0 0;min-height:310px;padding:2rem}.auth-card{border-radius:0 0 22px 22px;padding:2rem}.progress-banner{align-items:flex-start;flex-wrap:wrap}.progress-banner .text-link{margin-left:0}.profile-hero .btn{margin:0!important}.section-heading{align-items:flex-start;gap:1rem}.roadmap-badge{white-space:nowrap}.roadmap-hero{border-radius:19px;padding:2rem 1.4rem}.roadmap-hero:after{right:-180px}.content-card{padding:1.25rem}.roadmap-actions{justify-content:stretch}.roadmap-actions .btn{flex:1}.navbar-nav{padding:1rem 0}.form-actions{padding:1.2rem}.table-card{overflow:hidden}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;scroll-behavior:auto!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}}
+/* ==========================================
+   GOOGLE LOGIN
+========================================== */
+
+.google-login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    padding: 12px 16px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+
+    font-weight: 600;
+    color: #374151;
+
+    background: white;
+
+    transition: all 0.2s ease;
+}
+
+.google-login-btn:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+    transform: translateY(-1px);
+}
+
+.google-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 24px;
+    height: 24px;
+
+    border-radius: 50%;
+
+    font-weight: 700;
+    font-size: 16px;
+
+    color: #4285F4;
+    font-family: Arial, sans-serif;
+}
+
+
+/* OR DIVIDER */
+
+.login-divider {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    margin: 20px 0;
+
+    color: #9ca3af;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+.login-divider::before,
+.login-divider::after {
+    content: "";
+
+    flex: 1;
+
+    height: 1px;
+
+    background: #e5e7eb;
+}

@@ -1,3 +1,1000 @@
-{% extends "base.html" %}{% block title %}Choose target roles{% endblock %}{% block content %}
-<section class="form-page page-enter"><div class="form-heading"><span class="eyebrow">ASSESSMENT SCOPE</span><h1>Choose your target roles.</h1><p>Select related roles, search the catalogue, or add your own. Your assessment will test only the skills they require.</p></div>{% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}<form method="post" class="content-card" id="role-form">{% csrf_token %}<label for="role-search">Search or add a role</label><div class="input-group mb-3"><input id="role-search" class="form-control" autocomplete="off" placeholder="e.g. Backend Developer"><button class="btn btn-outline-primary" type="button" id="add-role">Add role</button></div><p class="muted mb-2">Selected roles</p><div id="selected-roles" class="skill-cloud mb-4">{% for role in student.target_roles %}<span>{{ role }} <button type="button">×</button><input type="hidden" name="target_roles" value="{{ role }}"></span>{% endfor %}</div><p class="muted mb-2">Popular roles</p><div class="row g-2 mb-4">{% for role in popular_roles %}<div class="col-md-4 role-option" data-name="{{ role }}"><button class="btn btn-light w-100 text-start add-catalogue" type="button">+ {{ role }}</button></div>{% endfor %}</div><div class="form-actions"><button class="btn btn-outline-primary" type="button" id="suggest-roles">Suggest roles from my interests</button><button class="btn btn-primary">Confirm roles & start assessment <span>→</span></button></div></form><section id="suggestion-panel" class="content-card mt-4 d-none"><h2>Complementary role suggestions</h2><div id="suggestions" class="row g-3"></div></section></section>
-<script>(()=>{const s=document.querySelector('#selected-roles'),q=document.querySelector('#role-search'),t=document.querySelector('[name=csrfmiddlewaretoken]').value,has=r=>[...s.querySelectorAll('input')].some(i=>i.value.toLowerCase()===r.toLowerCase()),add=r=>{r=r.trim();if(!r||has(r))return;const x=document.createElement('span'),b=document.createElement('button'),i=document.createElement('input');x.append(document.createTextNode(r+' '));b.type='button';b.textContent='×';b.onclick=()=>x.remove();i.type='hidden';i.name='target_roles';i.value=r;x.append(b,i);s.append(x)};document.querySelector('#add-role').onclick=()=>{add(q.value);q.value=''};q.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();document.querySelector('#add-role').click()}};document.querySelectorAll('.add-catalogue').forEach(b=>b.onclick=()=>add(b.closest('.role-option').dataset.name));q.oninput=()=>document.querySelectorAll('.role-option').forEach(e=>e.classList.toggle('d-none',!e.dataset.name.toLowerCase().includes(q.value.toLowerCase())));s.querySelectorAll('button').forEach(b=>b.onclick=()=>b.parentElement.remove());document.querySelector('#suggest-roles').onclick=async()=>{const b=document.querySelector('#suggest-roles');b.disabled=true;b.textContent='Finding suggestions…';try{const r=await fetch('{% url "role_recommendations" %}',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':t},body:JSON.stringify({interests:'{{ student.interests|escapejs }}',current_roles:[...s.querySelectorAll('input')].map(i=>i.value)})}),d=await r.json(),o=document.querySelector('#suggestions');o.innerHTML='';(d.roles||[]).forEach(v=>{const c=document.createElement('div');c.className='col-md-6';c.innerHTML='<article class="border rounded p-3 h-100"><h3 class="h6"></h3><p class="muted"></p><button type="button" class="btn btn-sm btn-outline-primary">Add role</button></article>';c.querySelector('h3').textContent=v.name;c.querySelector('p').textContent=v.reason;c.querySelector('button').onclick=()=>add(v.name);o.append(c)});document.querySelector('#suggestion-panel').classList.remove('d-none')}finally{b.disabled=false;b.textContent='Suggest roles from my interests'}}})()</script>{% endblock %}
+{% extends "base.html" %}
+
+{% block title %}Choose target roles{% endblock %}
+
+{% block content %}
+
+<section class="form-page page-enter">
+
+    <!-- PAGE HEADING -->
+    <div class="form-heading">
+
+        <span class="eyebrow">ASSESSMENT SCOPE</span>
+
+        <h1>Choose your target roles.</h1>
+
+        <p>
+            Your recommendations are personalized using your profile,
+            including skills, interests, education and experience.
+            You can choose any role or add your own.
+        </p>
+
+    </div>
+
+
+    <!-- ERROR MESSAGE -->
+    {% if error %}
+
+    <div class="alert alert-danger">
+        {{ error }}
+    </div>
+
+    {% endif %}
+
+
+    <!-- =========================================================
+         ROLE SELECTION FORM
+         ========================================================= -->
+
+    <form method="post" class="content-card" id="role-form">
+
+        {% csrf_token %}
+
+
+        <!-- SEARCH / ADD ROLE -->
+
+        <label for="role-search">
+            Search or add a role
+        </label>
+
+        <div class="input-group mb-3">
+
+            <input
+                id="role-search"
+                class="form-control"
+                autocomplete="off"
+                placeholder="e.g. Backend Developer"
+            >
+
+            <button
+                class="btn btn-outline-primary"
+                type="button"
+                id="add-role"
+            >
+                Add role
+            </button>
+
+        </div>
+
+
+        <!-- SELECTED ROLES -->
+
+        <p class="muted mb-2">
+            Selected roles
+        </p>
+
+        <p id="role-limit-message" class="muted mb-3">
+            Choose up to 3 roles for your assessment.
+        </p>
+
+
+        <div
+            id="selected-roles"
+            class="skill-cloud mb-4"
+        >
+
+            {% for role in student.target_roles %}
+
+            <span>
+
+                {{ role }}
+
+                <button type="button">
+                    ×
+                </button>
+
+                <input
+                    type="hidden"
+                    name="target_roles"
+                    value="{{ role }}"
+                >
+
+            </span>
+
+            {% endfor %}
+
+        </div>
+
+
+        <!-- =========================================================
+             AI RECOMMENDATIONS BUTTON
+             ========================================================= -->
+
+        <div
+            class="content-card mb-4"
+            style="background: rgba(255,255,255,0.03);"
+        >
+
+            <div
+                class="d-flex
+                       justify-content-between
+                       align-items-center
+                       mb-2"
+            >
+
+                <div>
+
+                    <p class="eyebrow mb-1">
+                        AI CAREER MATCH
+                    </p>
+
+                    <h2 class="h4 mb-1">
+                        Recommended for you
+                    </h2>
+
+                    <p class="muted mb-0">
+                        Based on your skills, interests, education
+                        and experience.
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="btn btn-outline-primary"
+                    type="button"
+                    id="suggest-roles"
+                >
+                    ✨ Get AI Recommendations
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================================================
+             ALL AVAILABLE / POPULAR ROLES
+             ========================================================= -->
+
+        <p class="muted mb-2">
+            Explore All Job Roles
+        </p>
+
+        <div class="row g-2 mb-4">
+
+            {% for role in popular_roles %}
+
+            <div
+                class="col-md-4 role-option"
+                data-name="{{ role }}"
+            >
+
+                <button
+                    class="btn btn-light w-100 text-start add-catalogue"
+                    type="button"
+                >
+                    + {{ role }}
+                </button>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+
+        <!-- =========================================================
+             FORM ACTION
+             ========================================================= -->
+
+        <div class="form-actions">
+
+            <button
+                class="btn btn-primary"
+                type="submit"
+            >
+                Confirm roles & start assessment
+                <span>→</span>
+            </button>
+
+        </div>
+
+    </form>
+
+
+    <!-- =========================================================
+         AI SUGGESTION PANEL
+         ========================================================= -->
+
+    <section
+        id="suggestion-panel"
+        class="content-card mt-4 d-none"
+    >
+
+        <div class="mb-3">
+
+            <span class="eyebrow">
+                PERSONALIZED AI SUGGESTIONS
+            </span>
+
+            <h2>
+                Roles that match your profile
+            </h2>
+
+            <p class="muted">
+                These suggestions are based on the information in
+                your CareerFlow profile. They are recommendations,
+                not restrictions.
+            </p>
+
+        </div>
+
+
+        <!-- PROFILE INFORMATION USED -->
+
+        <div
+            id="profile-summary"
+            class="mb-4"
+        >
+        </div>
+
+
+        <!-- AI GENERATED ROLES -->
+
+        <div
+            id="suggestions"
+            class="row g-3"
+        >
+        </div>
+
+    </section>
+
+</section>
+
+
+
+<script>
+
+(() => {
+
+    /* =========================================================
+       BASIC ELEMENTS
+       ========================================================= */
+
+    const selectedRoles =
+        document.querySelector("#selected-roles");
+
+    const roleSearch =
+        document.querySelector("#role-search");
+
+    const csrfToken =
+        document.querySelector(
+            "[name=csrfmiddlewaretoken]"
+        ).value;
+
+
+    /* =========================================================
+       MAXIMUM NUMBER OF ROLES
+       ========================================================= */
+
+    const MAX_ROLES = 3;
+
+
+    /* =========================================================
+       GET CURRENTLY SELECTED ROLES
+       ========================================================= */
+
+    const getSelectedRoles = () => {
+
+        return [
+            ...selectedRoles.querySelectorAll("input")
+        ].map(
+            input => input.value
+        );
+
+    };
+
+
+    /* =========================================================
+       CHECK WHETHER ROLE ALREADY EXISTS
+       ========================================================= */
+
+    const hasRole = (role) => {
+
+        return [
+            ...selectedRoles.querySelectorAll("input")
+        ].some(
+            input =>
+                input.value.toLowerCase() ===
+                role.toLowerCase()
+        );
+
+    };
+
+
+    /* =========================================================
+       UPDATE ROLE COUNTER
+       ========================================================= */
+
+    const updateRoleCounter = () => {
+
+        const count =
+            getSelectedRoles().length;
+
+        const message =
+            document.querySelector(
+                "#role-limit-message"
+            );
+
+        if (count >= MAX_ROLES) {
+
+            message.textContent =
+                "You have selected 3 roles. Remove a role to choose another.";
+
+        } else {
+
+            message.textContent =
+                `You can select ${MAX_ROLES - count} more role${MAX_ROLES - count === 1 ? "" : "s"}.`;
+
+        }
+
+    };
+
+
+    /* =========================================================
+       ADD ROLE
+       ========================================================= */
+
+    const addRole = (role) => {
+
+        role = role.trim();
+
+
+        /* EMPTY ROLE */
+
+        if (!role) {
+
+            return;
+
+        }
+
+
+        /* DUPLICATE ROLE */
+
+        if (hasRole(role)) {
+
+            return;
+
+        }
+
+
+        /* MAXIMUM ROLE LIMIT */
+
+        if (
+            getSelectedRoles().length >= MAX_ROLES
+        ) {
+
+            alert(
+                "You can choose up to 3 target roles for one assessment."
+            );
+
+            return;
+
+        }
+
+
+        /* CREATE ROLE CONTAINER */
+
+        const container =
+            document.createElement("span");
+
+
+        /* CREATE REMOVE BUTTON */
+
+        const removeButton =
+            document.createElement("button");
+
+
+        /* CREATE HIDDEN FORM INPUT */
+
+        const hiddenInput =
+            document.createElement("input");
+
+
+        /* ROLE TEXT */
+
+        container.appendChild(
+            document.createTextNode(
+                role + " "
+            )
+        );
+
+
+        /* REMOVE BUTTON */
+
+        removeButton.type = "button";
+
+        removeButton.textContent = "×";
+
+        removeButton.onclick = () => {
+
+            container.remove();
+
+            updateRoleCounter();
+
+        };
+
+
+        /* HIDDEN INPUT */
+
+        hiddenInput.type = "hidden";
+
+        hiddenInput.name =
+            "target_roles";
+
+        hiddenInput.value =
+            role;
+
+
+        /* ADD ELEMENTS */
+
+        container.appendChild(
+            removeButton
+        );
+
+        container.appendChild(
+            hiddenInput
+        );
+
+        selectedRoles.appendChild(
+            container
+        );
+
+
+        /* UPDATE COUNTER */
+
+        updateRoleCounter();
+
+    };
+
+
+    /* =========================================================
+       ADD CUSTOM ROLE
+       ========================================================= */
+
+    document
+        .querySelector("#add-role")
+        .onclick = () => {
+
+            addRole(
+                roleSearch.value
+            );
+
+            roleSearch.value = "";
+
+        };
+
+
+    /* =========================================================
+       ENTER KEY = ADD ROLE
+       ========================================================= */
+
+    roleSearch.onkeydown = (event) => {
+
+        if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            document
+                .querySelector("#add-role")
+                .click();
+
+        }
+
+    };
+
+
+    /* =========================================================
+       ADD ROLE FROM CATALOGUE
+       ========================================================= */
+
+    document
+        .querySelectorAll(".add-catalogue")
+        .forEach(button => {
+
+            button.onclick = () => {
+
+                const role =
+                    button
+                        .closest(".role-option")
+                        .dataset.name;
+
+                addRole(role);
+
+            };
+
+        });
+
+
+    /* =========================================================
+       SEARCH AVAILABLE ROLES
+       ========================================================= */
+
+    roleSearch.oninput = () => {
+
+        const searchText =
+            roleSearch.value.toLowerCase();
+
+
+        document
+            .querySelectorAll(".role-option")
+            .forEach(option => {
+
+                const roleName =
+                    option
+                        .dataset
+                        .name
+                        .toLowerCase();
+
+
+                option.classList.toggle(
+                    "d-none",
+                    !roleName.includes(searchText)
+                );
+
+            });
+
+    };
+
+
+    /* =========================================================
+       REMOVE EXISTING SELECTED ROLES
+       ========================================================= */
+
+    selectedRoles
+        .querySelectorAll("button")
+        .forEach(button => {
+
+            button.onclick = () => {
+
+                button
+                    .parentElement
+                    .remove();
+
+                updateRoleCounter();
+
+            };
+
+        });
+
+
+    /* =========================================================
+       INITIAL ROLE COUNTER
+       ========================================================= */
+
+    updateRoleCounter();
+
+
+    /* =========================================================
+       AI ROLE RECOMMENDATIONS
+       ========================================================= */
+
+    document
+        .querySelector("#suggest-roles")
+        .onclick = async () => {
+
+
+            const button =
+                document.querySelector(
+                    "#suggest-roles"
+                );
+
+
+            const suggestionPanel =
+                document.querySelector(
+                    "#suggestion-panel"
+                );
+
+
+            const suggestions =
+                document.querySelector(
+                    "#suggestions"
+                );
+
+
+            const profileSummary =
+                document.querySelector(
+                    "#profile-summary"
+                );
+
+
+            /* -------------------------------------------------
+               GET CURRENT ROLES
+               ------------------------------------------------- */
+
+            const currentRoles =
+                getSelectedRoles();
+
+
+            /* -------------------------------------------------
+               COMPLETE STUDENT PROFILE
+               -------------------------------------------------
+
+               We are sending:
+
+               Skills
+               Interests
+               Education
+               Branch
+               Year
+               Experience Level
+
+               This is what makes the recommendations
+               personalized.
+               ------------------------------------------------- */
+
+            const profileInformation = `
+
+Student Career Profile:
+
+Skills:
+{{ student.skills|default:"Not provided"|escapejs }}
+
+Interests:
+{{ student.interests|default:"Not provided"|escapejs }}
+
+Education:
+{{ student.education|default:"Not provided"|escapejs }}
+
+Branch / Specialization:
+{{ student.branch|default:"Not provided"|escapejs }}
+
+Year:
+{{ student.year|default:"Not provided"|escapejs }}
+
+Experience Level:
+{{ student.experience_level|default:"Beginner"|escapejs }}
+
+Current Target Roles:
+${currentRoles.length
+    ? currentRoles.join(", ")
+    : "None"}
+
+`;
+
+
+            /* -------------------------------------------------
+               LOADING STATE
+               ------------------------------------------------- */
+
+            button.disabled = true;
+
+            button.textContent =
+                "Finding personalized roles...";
+
+
+            try {
+
+
+                /* -------------------------------------------------
+                   SEND REQUEST TO DJANGO
+                   ------------------------------------------------- */
+
+                const response =
+                    await fetch(
+                        '{% url "role_recommendations" %}',
+                        {
+
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json",
+
+                                "X-CSRFToken":
+                                    csrfToken
+
+                            },
+
+                            body: JSON.stringify({
+
+                                interests:
+                                    profileInformation,
+
+                                current_roles:
+                                    currentRoles
+
+                            })
+
+                        }
+                    );
+
+
+                /* -------------------------------------------------
+                   CHECK RESPONSE
+                   ------------------------------------------------- */
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Recommendation request failed"
+                    );
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                /* -------------------------------------------------
+                   CLEAR PREVIOUS RESULTS
+                   ------------------------------------------------- */
+
+                suggestions.innerHTML = "";
+
+
+                /* -------------------------------------------------
+                   SHOW PROFILE SUMMARY
+                   ------------------------------------------------- */
+
+                profileSummary.innerHTML = `
+
+                    <div class="border rounded p-3">
+
+                        <p class="mb-1">
+
+                            <strong>
+                                AI analyzed your profile using:
+                            </strong>
+
+                        </p>
+
+                        <p class="muted mb-0">
+
+                            Skills,
+                            interests,
+                            education,
+                            specialization,
+                            year,
+                            and experience level.
+
+                        </p>
+
+                    </div>
+
+                `;
+
+
+                /* -------------------------------------------------
+                   NO RESULTS
+                   ------------------------------------------------- */
+
+                if (
+                    !data.roles ||
+                    data.roles.length === 0
+                ) {
+
+                    suggestions.innerHTML = `
+
+                        <div class="col-12">
+
+                            <div class="alert alert-warning">
+
+                                No new recommendations were found.
+
+                                Try adding more skills or interests
+                                to your profile.
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+
+
+                /* -------------------------------------------------
+                   DISPLAY AI RECOMMENDATIONS
+                   ------------------------------------------------- */
+
+                else {
+
+                    data.roles.forEach(role => {
+
+
+                        const card =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        card.className =
+                            "col-md-6";
+
+
+                        card.innerHTML = `
+
+                            <article
+                                class="border
+                                       rounded
+                                       p-3
+                                       h-100"
+                            >
+
+                                <div
+                                    class="d-flex
+                                           justify-content-between
+                                           align-items-start
+                                           gap-3"
+                                >
+
+                                    <div>
+
+                                        <span
+                                            class="badge
+                                                   bg-primary
+                                                   mb-2"
+                                        >
+                                            AI MATCH
+                                        </span>
+
+                                        <h3
+                                            class="h5 mb-2"
+                                        ></h3>
+
+                                    </div>
+
+                                </div>
+
+
+                                <p
+                                    class="muted mb-3"
+                                ></p>
+
+
+                                <button
+                                    type="button"
+                                    class="btn
+                                           btn-sm
+                                           btn-outline-primary"
+                                >
+                                    + Add this role
+                                </button>
+
+                            </article>
+
+                        `;
+
+
+                        /* -------------------------------------------------
+                           ROLE NAME
+                           ------------------------------------------------- */
+
+                        card
+                            .querySelector("h3")
+                            .textContent =
+                                role.name;
+
+
+                        /* -------------------------------------------------
+                           ROLE REASON
+                           ------------------------------------------------- */
+
+                        card
+                            .querySelector("p")
+                            .textContent =
+                                role.reason;
+
+
+                        /* -------------------------------------------------
+                           ADD RECOMMENDED ROLE
+                           ------------------------------------------------- */
+
+                        card
+                            .querySelector("button")
+                            .onclick = () => {
+
+                                addRole(
+                                    role.name
+                                );
+
+                            };
+
+
+                        suggestions.appendChild(
+                            card
+                        );
+
+                    });
+
+                }
+
+
+                /* -------------------------------------------------
+                   SHOW SUGGESTION PANEL
+                   ------------------------------------------------- */
+
+                suggestionPanel
+                    .classList
+                    .remove("d-none");
+
+
+                /* -------------------------------------------------
+                   SCROLL TO RESULTS
+                   ------------------------------------------------- */
+
+                suggestionPanel.scrollIntoView({
+
+                    behavior: "smooth",
+
+                    block: "start"
+
+                });
+
+
+            }
+
+
+            /* =====================================================
+               ERROR HANDLING
+               ===================================================== */
+
+            catch (error) {
+
+                console.error(
+                    "CareerFlow recommendation error:",
+                    error
+                );
+
+
+                suggestions.innerHTML = `
+
+                    <div class="col-12">
+
+                        <div class="alert alert-danger">
+
+                            Unable to generate recommendations
+                            right now.
+
+                            Please make sure Ollama is running
+                            and try again.
+
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                suggestionPanel
+                    .classList
+                    .remove("d-none");
+
+            }
+
+
+            /* =====================================================
+               RESTORE BUTTON
+               ===================================================== */
+
+            finally {
+
+                button.disabled = false;
+
+                button.textContent =
+                    "✨ Get AI Recommendations";
+
+            }
+
+        };
+
+
+})();
+
+</script>
+
+{% endblock %}

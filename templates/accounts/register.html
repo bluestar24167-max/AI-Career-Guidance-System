@@ -1,1 +1,97 @@
-{% extends "base.html" %}{% block title %}Create your account{% endblock %}{% block content %}<section class="auth-layout page-enter"><div class="auth-aside"><span class="brand-mark">✦</span><span class="eyebrow">YOUR CAREER, YOUR WAY</span><h1>Start creating a future that feels like yours.</h1><p>It only takes a minute to begin your personalised career journey.</p><div class="auth-benefits"><span>✓ Tailored role suggestions</span><span>✓ Structured learning plans</span><span>✓ Trusted resource links</span></div></div><div class="auth-card content-card"><span class="eyebrow">GET STARTED</span><h2>Create your account</h2><p class="muted">Your roadmap begins with a few details.</p><form method="POST">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary w-100 mt-2">Create account <span>→</span></button></form><p class="auth-switch">Already have an account? <a href="/login/">Sign in</a></p></div></section>{% endblock %}
+{% extends "base.html" %}
+{% load socialaccount %}
+
+{% block title %}Create your account{% endblock %}
+
+{% block content %}
+
+<section class="auth-layout page-enter">
+
+    <!-- LEFT SIDE -->
+    <div class="auth-aside">
+
+        <span class="brand-mark">✦</span>
+
+        <span class="eyebrow">YOUR CAREER, YOUR WAY</span>
+
+        <h1>Start creating a future that feels like yours.</h1>
+
+        <p>
+            It only takes a minute to begin your personalised career journey.
+        </p>
+
+        <div class="auth-benefits">
+            <span>✓ Tailored role suggestions</span>
+            <span>✓ Structured learning plans</span>
+            <span>✓ Trusted resource links</span>
+        </div>
+
+    </div>
+
+
+    <!-- RIGHT SIDE -->
+    <div class="auth-card content-card">
+
+        <span class="eyebrow">GET STARTED</span>
+
+        <h2>Create your account</h2>
+
+        <p class="muted">
+            Your roadmap begins with a few details.
+        </p>
+
+
+        <!-- GOOGLE SIGN UP BUTTON -->
+
+        <a href="{% provider_login_url 'google' %}"
+           class="btn btn-light w-100 google-login-btn">
+
+            <span class="google-icon">G</span>
+
+            Continue with Google
+
+        </a>
+
+
+        <!-- DIVIDER -->
+
+        <div class="login-divider">
+            <span>OR</span>
+        </div>
+
+
+        <!-- NORMAL REGISTRATION FORM -->
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit"
+                    class="btn btn-primary w-100 mt-2">
+
+                Create account <span>→</span>
+
+            </button>
+
+        </form>
+
+
+        <!-- LOGIN LINK -->
+
+        <p class="auth-switch">
+
+            Already have an account?
+
+            <a href="/login/">
+                Sign in
+            </a>
+
+        </p>
+
+    </div>
+
+</section>
+
+{% endblock %}

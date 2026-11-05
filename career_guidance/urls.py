@@ -1,8 +1,11 @@
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
 from accounts import views
 
+
 urlpatterns = [
+
     # Home
     path("", views.home, name="home"),
 
@@ -30,6 +33,7 @@ urlpatterns = [
     # Django Admin
     path("admin/", admin.site.urls),
 
+    # Admin Panel
     path(
         "admin-dashboard/",
         include("adminpanel.urls")
@@ -37,4 +41,14 @@ urlpatterns = [
 
     # Django Allauth URLs
     path("accounts/", include("allauth.urls")),
+
+    # Service Worker
+    path(
+        "service-worker.js",
+        TemplateView.as_view(
+            template_name="service-worker.js",
+            content_type="application/javascript",
+        ),
+        name="service-worker",
+    ),
 ]

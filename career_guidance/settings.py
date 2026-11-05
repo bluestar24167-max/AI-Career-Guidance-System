@@ -30,7 +30,7 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-INSTALLED_APPS = [
+INSTALLED_APPS=[
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -55,6 +55,7 @@ INSTALLED_APPS = [
 ]
 # Django Sites Framework
 SITE_ID = 1
+SOCIALACCOUNT_LOGIN_ON_GET = True
 
 
 MIDDLEWARE = [
@@ -148,7 +149,7 @@ ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 
 # Google OAuth settings
-SOCIALACCOUNT_LOGIN_ON_GET = False
+SOCIALACCOUNT_LOGIN_ON_GET = True
 
 # Automatically create account after Google authentication
 SOCIALACCOUNT_AUTO_SIGNUP = True

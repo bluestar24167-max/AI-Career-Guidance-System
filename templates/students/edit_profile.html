@@ -1,1 +1,347 @@
-{% extends "base.html" %}{% block title %}Edit Profile{% endblock %}{% block content %}<section class="form-page page-enter"><div class="form-heading"><span class="eyebrow">MAKE IT PERSONAL</span><h1>Tell us more about you.</h1><p>Your profile gives the career guidance engine the context it needs to make good recommendations.</p></div><form method="POST" class="content-card profile-form">{% csrf_token %}<div class="form-section"><h2>Education</h2><div class="row g-3"><div class="col-md-6"><label>Education</label><input type="text" name="education" class="form-control" value="{{ student.education }}"></div><div class="col-md-6"><label>College</label><input type="text" name="college" class="form-control" value="{{ student.college }}"></div><div class="col-md-6"><label>Branch / specialisation</label><input type="text" name="branch" class="form-control" value="{{ student.branch }}"></div><div class="col-md-3"><label>Phone</label><input type="text" name="phone" class="form-control" value="{{ student.phone }}"></div><div class="col-md-3"><label>City</label><input type="text" name="city" class="form-control" value="{{ student.city }}"></div></div></div><div class="form-section"><h2>Career direction</h2><div class="row g-3"><div class="col-md-6"><label>Skills <small>Separate with commas</small></label><textarea name="skills" class="form-control" rows="4" placeholder="e.g. Python, public speaking, Figma">{{ student.skills }}</textarea></div><div class="col-md-6"><label>Interests <small>Separate with commas</small></label><textarea name="interests" class="form-control" rows="4" placeholder="e.g. Data, design, helping people">{{ student.interests }}</textarea></div></div></div><div class="form-actions"><a href="/profile/" class="btn btn-light">Cancel</a><button class="btn btn-primary">Save profile <span>→</span></button></div></form></section>{% endblock %}
+{% extends "base.html" %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+
+<section class="form-page page-enter">
+
+    <div class="form-heading">
+        <span class="eyebrow">MAKE IT PERSONAL</span>
+
+        <h1>Tell us more about you.</h1>
+
+        <p>
+            Your profile gives the CareerFlow AI engine the context it needs
+            to recommend career roles that actually match your skills,
+            interests, education and experience.
+        </p>
+    </div>
+
+
+    <form method="POST" class="content-card profile-form">
+
+        {% csrf_token %}
+
+
+        <!-- =========================
+             EDUCATION INFORMATION
+        ========================== -->
+
+        <div class="form-section">
+
+            <h2>Education</h2>
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label>Education</label>
+
+                    <input
+                        type="text"
+                        name="education"
+                        class="form-control"
+                        value="{{ student.education }}"
+                        placeholder="e.g. B.Tech, Diploma, B.Sc"
+                    >
+                </div>
+
+
+                <div class="col-md-6">
+                    <label>College</label>
+
+                    <input
+                        type="text"
+                        name="college"
+                        class="form-control"
+                        value="{{ student.college }}"
+                        placeholder="Enter your college name"
+                    >
+                </div>
+
+
+                <div class="col-md-6">
+                    <label>Branch / Specialisation</label>
+
+                    <input
+                        type="text"
+                        name="branch"
+                        class="form-control"
+                        value="{{ student.branch }}"
+                        placeholder="e.g. Computer Science, AI & ML"
+                    >
+                </div>
+
+
+                <div class="col-md-3">
+                    <label>Current Year</label>
+
+                    <select name="year" class="form-control">
+
+                        <option value="">Select year</option>
+
+                        <option value="1st Year"
+                            {% if student.year == "1st Year" %}selected{% endif %}>
+                            1st Year
+                        </option>
+
+                        <option value="2nd Year"
+                            {% if student.year == "2nd Year" %}selected{% endif %}>
+                            2nd Year
+                        </option>
+
+                        <option value="3rd Year"
+                            {% if student.year == "3rd Year" %}selected{% endif %}>
+                            3rd Year
+                        </option>
+
+                        <option value="4th Year"
+                            {% if student.year == "4th Year" %}selected{% endif %}>
+                            4th Year
+                        </option>
+
+                        <option value="Final Year"
+                            {% if student.year == "Final Year" %}selected{% endif %}>
+                            Final Year
+                        </option>
+
+                        <option value="Graduated"
+                            {% if student.year == "Graduated" %}selected{% endif %}>
+                            Graduated
+                        </option>
+
+                    </select>
+                </div>
+
+
+                <div class="col-md-3">
+                    <label>City</label>
+
+                    <input
+                        type="text"
+                        name="city"
+                        class="form-control"
+                        value="{{ student.city }}"
+                        placeholder="e.g. Hyderabad"
+                    >
+                </div>
+
+
+                <div class="col-md-6">
+                    <label>Phone</label>
+
+                    <input
+                        type="text"
+                        name="phone"
+                        class="form-control"
+                        value="{{ student.phone }}"
+                        placeholder="Enter your phone number"
+                    >
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             CAREER INFORMATION
+        ========================== -->
+
+        <div class="form-section">
+
+            <h2>Career direction</h2>
+
+            <p class="muted">
+                These details are especially important because CareerFlow
+                uses them to personalize your recommended job roles.
+            </p>
+
+
+            <div class="row g-3">
+
+
+                <!-- SKILLS -->
+
+                <div class="col-md-6">
+
+                    <label>
+                        Skills
+                        <small>Separate with commas</small>
+                    </label>
+
+                    <textarea
+                        name="skills"
+                        class="form-control"
+                        rows="5"
+                        placeholder="e.g. Python, SQL, Django, Java, HTML, CSS"
+                    >{{ student.skills }}</textarea>
+
+                </div>
+
+
+                <!-- INTERESTS -->
+
+                <div class="col-md-6">
+
+                    <label>
+                        Interests
+                        <small>Separate with commas</small>
+                    </label>
+
+                    <textarea
+                        name="interests"
+                        class="form-control"
+                        rows="5"
+                        placeholder="e.g. Artificial Intelligence, Data Science, Web Development"
+                    >{{ student.interests }}</textarea>
+
+                </div>
+
+
+                <!-- EXPERIENCE LEVEL -->
+
+                <div class="col-md-6">
+
+                    <label>Experience Level</label>
+
+                    <select
+                        name="experience_level"
+                        class="form-control"
+                    >
+
+                        <option value="Beginner"
+                            {% if student.experience_level == "Beginner" %}
+                            selected
+                            {% endif %}>
+                            Beginner
+                        </option>
+
+                        <option value="Intermediate"
+                            {% if student.experience_level == "Intermediate" %}
+                            selected
+                            {% endif %}>
+                            Intermediate
+                        </option>
+
+                        <option value="Advanced"
+                            {% if student.experience_level == "Advanced" %}
+                            selected
+                            {% endif %}>
+                            Advanced
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- CURRENT TARGET ROLES -->
+
+                <div class="col-md-6">
+
+                    <label>Current Target Roles</label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        value="{{ student.target_roles|join:', ' }}"
+                        disabled
+                    >
+
+                    <small class="text-muted">
+                        You can change your target roles from the
+                        AI Assessment page.
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             AI PERSONALIZATION INFO
+        ========================== -->
+
+        <div class="form-section">
+
+            <div class="content-card">
+
+                <span class="eyebrow">
+                    AI PERSONALIZATION
+                </span>
+
+                <h2>
+                    How CareerFlow uses your profile
+                </h2>
+
+                <p class="muted">
+                    Your skills, interests, education, specialisation,
+                    current year and experience level will be considered
+                    when generating your career recommendations.
+                </p>
+
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+                        <strong>Skills</strong>
+                        <p class="muted">
+                            Helps identify roles that match what you
+                            already know.
+                        </p>
+                    </div>
+
+                    <div class="col-md-4">
+                        <strong>Interests</strong>
+                        <p class="muted">
+                            Helps identify career areas you are naturally
+                            interested in.
+                        </p>
+                    </div>
+
+                    <div class="col-md-4">
+                        <strong>Education</strong>
+                        <p class="muted">
+                            Helps the AI understand your academic
+                            background and specialisation.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             FORM ACTIONS
+        ========================== -->
+
+        <div class="form-actions">
+
+            <a
+                href="/profile/"
+                class="btn btn-light"
+            >
+                Cancel
+            </a>
+
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+                Save profile
+                <span>→</span>
+            </button>
+
+        </div>
+
+    </form>
+
+</section>
+
+{% endblock %}

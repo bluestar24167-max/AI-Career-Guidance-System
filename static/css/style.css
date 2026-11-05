@@ -79,3 +79,212 @@
 
     background: #e5e7eb;
 }
+/* ==========================================
+   NEW ROADMAP RESOURCE SECTIONS
+   Matches the existing CareerFlow UI
+========================================== */
+
+.roadmap-resource-card {
+    background: #fff;
+    border: 1px solid #e8eaf6;
+    border-radius: 14px;
+    margin-top: 1rem;
+    padding: 1rem 1.1rem;
+    transition: .22s ease;
+}
+
+.roadmap-resource-card:hover {
+    border-color: #cbc5f5;
+    box-shadow: 0 9px 22px rgba(31,43,92,.07);
+    transform: translateY(-2px);
+}
+
+.roadmap-resource-card h4 {
+    color: var(--ink);
+    font-family: "Space Grotesk", sans-serif;
+    font-size: .9rem;
+    font-weight: 700;
+    margin: 0 0 .45rem;
+}
+
+.roadmap-resource-card p {
+    color: var(--muted);
+    font-size: .86rem;
+    line-height: 1.55;
+    margin: 0 0 .65rem;
+}
+
+.roadmap-resource-label {
+    color: #7770df;
+    display: block;
+    font-size: .67rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    margin-bottom: .3rem;
+    text-transform: uppercase;
+}
+
+.roadmap-resource-link {
+    align-items: center;
+    background: #f0efff;
+    border-radius: 9px;
+    color: var(--primary);
+    display: inline-flex;
+    font-size: .8rem;
+    font-weight: 700;
+    gap: .35rem;
+    padding: .45rem .65rem;
+    text-decoration: none;
+    transition: .2s ease;
+}
+
+.roadmap-resource-link:hover {
+    background: #e7e4ff;
+    color: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.roadmap-resource-link.practice {
+    background: #eaf7ff;
+    color: #2073bb;
+}
+
+.roadmap-resource-link.practice:hover {
+    background: #def1ff;
+    color: #155d98;
+}
+
+.roadmap-resource-link.project {
+    background: #edf8f1;
+    color: #23804e;
+}
+
+.roadmap-resource-link.project:hover {
+    background: #e1f3e8;
+    color: #17663c;
+}
+
+.roadmap-resource-grid {
+    display: grid;
+    gap: .8rem;
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: 1rem;
+}
+
+.roadmap-stage-meta {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-bottom: .65rem;
+}
+
+.roadmap-priority {
+    background: #f1efff;
+    border-radius: 999px;
+    color: var(--primary);
+    font-size: .68rem;
+    font-weight: 700;
+    padding: .3rem .55rem;
+}
+
+.roadmap-skill {
+    background: #edf7ff;
+    border-radius: 999px;
+    color: #2073bb;
+    font-size: .68rem;
+    font-weight: 700;
+    padding: .3rem .55rem;
+}
+
+.roadmap-concepts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    margin: .7rem 0;
+}
+
+.roadmap-concepts span {
+    background: #f7f8fc;
+    border: 1px solid #e8eaf4;
+    border-radius: 7px;
+    color: #69738a;
+    font-size: .73rem;
+    padding: .3rem .48rem;
+}
+
+.roadmap-task-list {
+    margin: .5rem 0 0;
+    padding-left: 1.15rem;
+}
+
+.roadmap-task-list li {
+    color: var(--muted);
+    font-size: .84rem;
+    line-height: 1.55;
+    margin-bottom: .3rem;
+}
+
+.roadmap-outcome {
+    background: linear-gradient(120deg, #f1efff, #edf8ff);
+    border: 1px solid #e5e5f7;
+    border-radius: 11px;
+    color: #4f5870;
+    font-size: .84rem;
+    line-height: 1.55;
+    margin-top: 1rem;
+    padding: .75rem .85rem;
+}
+
+.roadmap-outcome strong {
+    color: var(--primary);
+}
+
+.role-result-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1rem 1.1rem;
+}
+
+.role-result-card h3 {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.role-result-card .role-score {
+    color: var(--primary);
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.best-match-card {
+    background: linear-gradient(135deg, #f0efff, #eaf7ff);
+    border: 1px solid #dddafa;
+    border-radius: 15px;
+    margin-bottom: 1rem;
+    padding: 1.1rem;
+}
+
+.best-match-card h3 {
+    font-size: 1.15rem;
+    margin: .2rem 0 .35rem;
+}
+
+.best-match-card p {
+    color: var(--muted);
+    font-size: .86rem;
+    line-height: 1.55;
+    margin: 0;
+}
+
+@media(max-width:767px) {
+    .roadmap-resource-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .roadmap-resource-card {
+        padding: .9rem;
+    }
+}

@@ -26,9 +26,29 @@ if not SECRET_KEY:
 # Development settings
 DEBUG = True
 
-ALLOWED_HOSTS = [h for h in os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",") if h]
+def _env_list(name):
+    return [item.strip() for item in os.getenv(name, "").split(",") if item.strip()]
 
-CSRF_TRUSTED_ORIGINS = [o for o in os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if o]
+
+VERCEL_HOSTS = [
+    host
+    for host in (
+        os.getenv("VERCEL_URL"),
+        os.getenv("VERCEL_BRANCH_URL"),
+        os.getenv("VERCEL_PROJECT_PRODUCTION_URL"),
+    )
+    if host
+]
+
+ALLOWED_HOSTS = _env_list("DJANGO_ALLOWED_HOSTS") + VERCEL_HOSTS
+if os.getenv("VERCEL"):
+    ALLOWED_HOSTS.append(".vercel.app")
+
+CSRF_TRUSTED_ORIGINS = _env_list("DJANGO_CSRF_TRUSTED_ORIGINS") + [
+    f"https://{host}" for host in VERCEL_HOSTS
+]
+if os.getenv("VERCEL"):
+    CSRF_TRUSTED_ORIGINS.append("https://*.vercel.app")
 
 # Embedded previews load the app in a cross-site iframe, so cookies must be SameSite=None.
 if os.getenv("DJANGO_EMBEDDED_PREVIEW") == "1":

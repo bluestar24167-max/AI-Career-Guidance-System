@@ -26,7 +26,17 @@ if not SECRET_KEY:
 # Development settings
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [h for h in os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",") if h]
+
+CSRF_TRUSTED_ORIGINS = [o for o in os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if o]
+
+# Embedded previews load the app in a cross-site iframe, so cookies must be SameSite=None.
+if os.getenv("DJANGO_EMBEDDED_PREVIEW") == "1":
+    SESSION_COOKIE_SAMESITE = "None"
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SAMESITE = "None"
+    CSRF_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
 # Application definition
@@ -104,6 +114,12 @@ DATABASES = {
         'PORT': os.getenv("DB_PORT", "3306"),
     }
 }
+
+if os.getenv("DJANGO_DB_ENGINE") == "sqlite":
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 
 
 # Password validation

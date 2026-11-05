@@ -1,1 +1,99 @@
-{% extends "base.html" %}{% block title %}Welcome back{% endblock %}{% block content %}<section class="auth-layout page-enter"><div class="auth-aside"><span class="brand-mark">✦</span><span class="eyebrow">CAREERFLOW</span><h1>A clearer future starts with one small step.</h1><p>Sign in to continue building your personal career roadmap.</p><div class="quote-mark">“</div></div><div class="auth-card content-card"><span class="eyebrow">WELCOME BACK</span><h2>Sign in to your account</h2><p class="muted">Pick up exactly where you left off.</p>{% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}<form method="POST">{% csrf_token %}<div class="mb-3"><label for="email">Email address</label><input id="email" type="email" name="email" class="form-control" required autofocus></div><div class="mb-4"><label for="password">Password</label><input id="password" type="password" name="password" class="form-control" required></div><button class="btn btn-primary w-100">Sign in <span>→</span></button></form><p class="auth-switch">New to CareerFlow? <a href="/register/">Create an account</a></p></div></section>{% endblock %}
+{% extends "base.html" %}
+{% load socialaccount %}
+
+{% block title %}Welcome back{% endblock %}
+
+{% block content %}
+
+<section class="auth-layout page-enter">
+
+    <div class="auth-aside">
+        <span class="brand-mark">✦</span>
+        <span class="eyebrow">CAREERFLOW</span>
+        <h1>A clearer future starts with one small step.</h1>
+        <p>Sign in to continue building your personal career roadmap.</p>
+        <div class="quote-mark">“</div>
+    </div>
+
+
+    <div class="auth-card content-card">
+
+        <span class="eyebrow">WELCOME BACK</span>
+        <h2>Sign in to your account</h2>
+        <p class="muted">Pick up exactly where you left off.</p>
+
+
+        {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+
+
+        <!-- GOOGLE LOGIN BUTTON -->
+        <a href="{% provider_login_url 'google' %}"
+           class="btn btn-light w-100 google-login-btn">
+
+            <span class="google-icon">G</span>
+            Continue with Google
+
+        </a>
+
+
+        <!-- DIVIDER -->
+        <div class="login-divider">
+            <span>OR</span>
+        </div>
+
+
+        <!-- NORMAL EMAIL LOGIN -->
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="mb-3">
+
+                <label for="email">Email address</label>
+
+                <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    class="form-control"
+                    required
+                    autofocus
+                >
+
+            </div>
+
+
+            <div class="mb-4">
+
+                <label for="password">Password</label>
+
+                <input
+                    id="password"
+                    type="password"
+                    name="password"
+                    class="form-control"
+                    required
+                >
+
+            </div>
+
+
+            <button class="btn btn-primary w-100">
+                Sign in <span>→</span>
+            </button>
+
+        </form>
+
+
+        <p class="auth-switch">
+            New to CareerFlow?
+            <a href="/register/">Create an account</a>
+        </p>
+
+    </div>
+
+</section>
+
+{% endblock %}

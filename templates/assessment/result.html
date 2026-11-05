@@ -1,1 +1,778 @@
-{% extends "base.html" %}{% block title %}Assessment analysis{% endblock %}{% block content %}<section class="page-enter"><div class="roadmap-hero"><span class="eyebrow">PERFORMANCE ANALYSIS</span><h1>Your role-readiness starting point.</h1><p>{% for role in assessment.target_roles %}{{ role }}{% if not forloop.last %}, {% endif %}{% endfor %}</p><div class="hero-pills"><span>Score: {{ assessment.score }}/{{ assessment.total_questions }}</span><span>Evidence-based skill analysis</span></div></div><div class="row g-4 mt-1"><div class="col-lg-8"><section class="content-card"><span class="eyebrow">AI SUMMARY</span><p class="summary-text">{{ analysis.summary }}</p></section><section class="content-card mt-4"><span class="eyebrow">YOUR NEXT STEPS</span><h2>Learning roadmap</h2>{% for lesson in analysis.roadmap.lessons %}<article class="lesson-card"><div class="lesson-number">0{{ lesson.number }}</div><div class="lesson-body"><span class="lesson-duration">{{ lesson.duration }}</span><h3>{{ lesson.title }}</h3><p>{{ lesson.outcome }}</p><p><strong>Do this:</strong> {{ lesson.instructions }}</p><p><strong>Project:</strong> {{ lesson.project }}</p><a class="resource-link" href="{{ lesson.url }}" target="_blank" rel="noopener">Learn on {{ lesson.provider }} ↗</a></div></article>{% endfor %}</section></div><div class="col-lg-4"><section class="content-card insight-card"><span class="eyebrow">STRENGTHS</span><div class="skill-cloud">{% for skill in analysis.strengths %}<span>{{ skill }}</span>{% empty %}<p class="muted">Keep building the core skills below.</p>{% endfor %}</div></section><section class="content-card insight-card mt-4"><span class="eyebrow">PRIORITY GAPS</span><div class="skill-cloud">{% for skill in analysis.skill_gaps %}<span>{{ skill }}</span>{% empty %}<p class="muted">Deepen your projects and interview practice.</p>{% endfor %}</div></section></div></div><div class="roadmap-actions"><a href="/careers/recommend/" class="btn btn-primary">Open full roadmap</a><a href="/assessment/" class="btn btn-light">Change target roles</a></div></section>{% endblock %}
+{% extends "base.html" %}
+
+{% block title %}Your Career Roadmap | CareerFlow{% endblock %}
+
+{% block content %}
+
+<style>
+    .roadmap-page {
+        padding: 35px 0 70px;
+    }
+
+    .roadmap-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 42px;
+        border-radius: 28px;
+        margin-bottom: 28px;
+        background:
+            radial-gradient(circle at 90% 10%, rgba(139, 92, 246, .28), transparent 30%),
+            linear-gradient(135deg, #111827, #312e81);
+        color: white;
+        box-shadow: 0 20px 50px rgba(31, 41, 55, .18);
+    }
+
+    .roadmap-hero .eyebrow,
+    .content-card .eyebrow {
+        display: block;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.7px;
+        margin-bottom: 10px;
+        color: #818cf8;
+    }
+
+    .roadmap-hero .eyebrow {
+        color: #c7d2fe;
+    }
+
+    .roadmap-hero h1 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: clamp(30px, 5vw, 48px);
+        line-height: 1.08;
+        margin: 0 0 15px;
+        font-weight: 700;
+    }
+
+    .roadmap-hero h1 span {
+        color: #a5b4fc;
+    }
+
+    .roadmap-hero p {
+        max-width: 760px;
+        margin: 0;
+        color: #dbeafe;
+        line-height: 1.75;
+        font-size: 16px;
+    }
+
+    .hero-pills {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 25px;
+    }
+
+    .hero-pills span {
+        padding: 8px 13px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, .1);
+        border: 1px solid rgba(255, 255, 255, .14);
+        font-size: 12px;
+        color: #eef2ff;
+    }
+
+    .content-card {
+        background: rgba(255, 255, 255, .96);
+        border: 1px solid #e8eaf2;
+        border-radius: 22px;
+        padding: 25px;
+        box-shadow: 0 10px 35px rgba(15, 23, 42, .06);
+    }
+
+    .section-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 8px;
+    }
+
+    .section-heading h2,
+    .content-card h2 {
+        font-family: "Space Grotesk", sans-serif;
+        margin: 0;
+        color: #172033;
+        font-size: 23px;
+    }
+
+    .roadmap-badge {
+        background: #eef2ff;
+        color: #4338ca;
+        padding: 7px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .muted {
+        color: #6b7280;
+        line-height: 1.7;
+    }
+
+    .learning-timeline {
+        margin-top: 25px;
+    }
+
+    .lesson-card {
+        position: relative;
+        display: flex;
+        gap: 18px;
+        padding: 23px 0;
+        border-top: 1px solid #edf0f5;
+        opacity: 0;
+        transform: translateY(12px);
+        transition: opacity .45s ease, transform .45s ease;
+        transition-delay: calc(var(--delay) * 70ms);
+    }
+
+    .lesson-card.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .lesson-number {
+        flex: 0 0 46px;
+        width: 46px;
+        height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 14px;
+        background: #eef2ff;
+        color: #4f46e5;
+        font-weight: 800;
+        font-size: 14px;
+    }
+
+    .lesson-body {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .lesson-duration {
+        display: inline-block;
+        margin-bottom: 5px;
+        color: #047857;
+        background: #ecfdf5;
+        padding: 5px 9px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .lesson-body h3 {
+        margin: 5px 0 8px;
+        color: #1f2937;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 19px;
+    }
+
+    .lesson-body p {
+        margin: 6px 0;
+        color: #596273;
+        line-height: 1.65;
+        font-size: 14px;
+    }
+
+    .lesson-body strong {
+        color: #374151;
+    }
+
+    .resource-links {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 17px;
+    }
+
+    .resource-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        padding: 9px 12px;
+        border-radius: 10px;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        color: #4338ca;
+        font-size: 12px;
+        font-weight: 700;
+        transition: .2s ease;
+    }
+
+    .resource-link:hover {
+        transform: translateY(-1px);
+        background: #eef2ff;
+        color: #3730a3;
+        border-color: #c7d2fe;
+    }
+
+    .sidebar-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .insight-card {
+        height: 100%;
+    }
+
+    .insight-card h2,
+    .ai-summary h2 {
+        margin-bottom: 18px;
+    }
+
+    .skill-cloud {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .skill-cloud span {
+        display: inline-block;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: #f5f3ff;
+        border: 1px solid #ddd6fe;
+        color: #5b21b6;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .summary-text {
+        color: #4b5563;
+        line-height: 1.75;
+        font-size: 14px;
+    }
+
+    .role-analysis {
+        margin-top: 28px;
+    }
+
+    .role-analysis-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #edf0f5;
+    }
+
+    .role-analysis-header h2 {
+        margin: 0;
+    }
+
+    .role-result-badge {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .role-score {
+        background: #4f46e5;
+        color: white;
+        padding: 7px 11px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .role-suitability {
+        background: #ecfdf5;
+        color: #047857;
+        border: 1px solid #a7f3d0;
+        padding: 7px 11px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .analysis-section {
+        margin-bottom: 22px;
+    }
+
+    .analysis-section h3 {
+        font-size: 15px;
+        margin-bottom: 12px;
+        color: #374151;
+        font-weight: 700;
+    }
+
+    .analysis-box {
+        padding: 17px;
+        border-radius: 15px;
+        background: #f8f7ff;
+        border: 1px solid #e0e7ff;
+        color: #4b5563;
+        line-height: 1.75;
+        font-size: 14px;
+    }
+
+    .job-cta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding: 18px 20px;
+        border-radius: 18px;
+        text-decoration: none;
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        color: white;
+        font-weight: 700;
+        box-shadow: 0 10px 25px rgba(79, 70, 229, .2);
+        transition: transform .2s ease;
+    }
+
+    .job-cta:hover {
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .roadmap-actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 28px;
+    }
+
+    @media (max-width: 767px) {
+        .roadmap-page {
+            padding: 20px 0 45px;
+        }
+
+        .roadmap-hero {
+            padding: 28px 22px;
+            border-radius: 22px;
+        }
+
+        .roadmap-hero h1 {
+            font-size: 31px;
+        }
+
+        .content-card {
+            padding: 20px;
+        }
+
+        .lesson-card {
+            gap: 12px;
+        }
+
+        .lesson-number {
+            flex-basis: 40px;
+            width: 40px;
+            height: 40px;
+        }
+
+        .resource-links {
+            flex-direction: column;
+        }
+
+        .resource-link {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+
+<section class="roadmap-page page-enter">
+
+    {% if error %}
+
+        <div class="alert alert-danger shadow-sm">
+            {{ error }}
+        </div>
+
+        <a href="/assessment/" class="btn btn-primary">
+            Take assessment
+        </a>
+
+    {% else %}
+
+        <!-- ========================================= -->
+        <!-- HERO -->
+        <!-- ========================================= -->
+
+        <div class="roadmap-hero">
+
+            <span class="eyebrow">
+                YOUR PERSONALISED PATH
+            </span>
+
+            <h1>
+                Prepare for
+                <span>
+                    {% if analysis.best_match %}
+                        {{ analysis.best_match.role }}
+                    {% else %}
+                        your target role
+                    {% endif %}
+                </span>.
+            </h1>
+
+            <p>
+                Hi {{ student.full_name }}, this is a practical learning path
+                built around your assessment, profile and current skill level.
+            </p>
+
+            <div class="hero-pills">
+
+                <span>
+                    Assessment:
+                    {{ assessment.score }}/{{ assessment.total_questions }}
+                </span>
+
+                <span>
+                    {{ student.experience_level|default:"Beginner" }} level
+                </span>
+
+                <span>
+                    {{ assessment.target_roles|length }} target role{{ assessment.target_roles|length|pluralize }}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================= -->
+        <!-- ROLE-BY-ROLE CONTENT -->
+        <!-- ========================================= -->
+
+        {% for role, data in analysis.role_analyses.items %}
+
+            <div class="row g-4 mt-1 role-analysis">
+
+                <!-- ================================= -->
+                <!-- MAIN ROADMAP -->
+                <!-- ================================= -->
+
+                <div class="col-lg-8">
+
+                    <section class="content-card roadmap-card">
+
+                        <div class="section-heading">
+
+                            <div>
+
+                                <span class="eyebrow">
+                                    {{ role|upper }}
+                                </span>
+
+                                <h2>
+                                    Your learning roadmap
+                                </h2>
+
+                            </div>
+
+                            <span class="roadmap-badge">
+                                {{ data.roadmap|length }} stages
+                            </span>
+
+                        </div>
+
+                        <p class="muted">
+                            A sequential plan based on the skill gaps identified
+                            in your {{ role }} assessment.
+                        </p>
+
+
+                        <div class="learning-timeline">
+
+                            {% for lesson in data.roadmap %}
+
+                                <article
+                                    class="lesson-card reveal"
+                                    style="--delay: {{ forloop.counter0 }}"
+                                >
+
+                                    <div class="lesson-number">
+                                        {{ forloop.counter|stringformat:"02d" }}
+                                    </div>
+
+
+                                    <div class="lesson-body">
+
+                                        <span class="lesson-duration">
+                                            {{ lesson.time|default:"Estimated time varies" }}
+                                        </span>
+
+                                        <h3>
+                                            {{ lesson.skill }}
+                                        </h3>
+
+                                        {% if lesson.outcome %}
+
+                                            <p>
+                                                <strong>Outcome:</strong>
+                                                {{ lesson.outcome }}
+                                            </p>
+
+                                        {% endif %}
+
+                                        {% if lesson.learn %}
+
+                                            <p>
+                                                <strong>Learn:</strong>
+                                                {{ lesson.learn }}
+                                            </p>
+
+                                        {% endif %}
+
+                                        {% if lesson.tasks %}
+
+                                            <p>
+                                                <strong>Do this:</strong>
+                                                {{ lesson.tasks|join:", " }}
+                                            </p>
+
+                                        {% endif %}
+
+                                        {% if lesson.project %}
+
+                                            <p>
+                                                <strong>Project:</strong>
+                                                {{ lesson.project }}
+                                            </p>
+
+                                        {% endif %}
+
+
+                                        <!-- RESOURCE LINKS -->
+
+                                        <div class="resource-links">
+
+                                            {% if lesson.learn_url %}
+
+                                                <a
+                                                    class="resource-link"
+                                                    href="{{ lesson.learn_url }}"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    Learn resource ↗
+                                                </a>
+
+                                            {% endif %}
+
+
+                                            {% if lesson.watch %}
+
+                                                <a
+                                                    class="resource-link"
+                                                    href="{{ lesson.watch }}"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    Watch on YouTube ↗
+                                                </a>
+
+                                            {% endif %}
+
+
+                                            {% if lesson.practice_url %}
+
+                                                <a
+                                                    class="resource-link"
+                                                    href="{{ lesson.practice_url }}"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    Practice this skill ↗
+                                                </a>
+
+                                            {% endif %}
+
+
+                                            {% if lesson.project_url %}
+
+                                                <a
+                                                    class="resource-link"
+                                                    href="{{ lesson.project_url }}"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    Build a project ↗
+                                                </a>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </div>
+
+                                </article>
+
+                            {% empty %}
+
+                                <div class="alert alert-light border">
+                                    No roadmap stages were generated for this role yet.
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+
+                <!-- ================================= -->
+                <!-- SIDEBAR -->
+                <!-- ================================= -->
+
+                <div class="col-lg-4">
+
+                    <aside class="sidebar-stack">
+
+                        <!-- INSIGHTS -->
+
+                        <section class="content-card insight-card">
+
+                            <span class="eyebrow">
+                                ASSESSMENT INSIGHTS
+                            </span>
+
+                            <h2>
+                                Strengths and priority gaps
+                            </h2>
+
+
+                            {% if data.strengths %}
+
+                                <p class="muted mt-3 mb-2">
+                                    Your strengths:
+                                </p>
+
+                                <div class="skill-cloud">
+
+                                    {% for skill in data.strengths %}
+
+                                        <span>
+                                            {{ skill }}
+                                        </span>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% endif %}
+
+
+                            {% if data.skill_gaps %}
+
+                                <p class="muted mt-3 mb-2">
+                                    Focus next on:
+                                </p>
+
+                                <div class="skill-cloud">
+
+                                    {% for skill in data.skill_gaps %}
+
+                                        <span>
+                                            {{ skill }}
+                                        </span>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% endif %}
+
+                        </section>
+
+
+                        <!-- AI INSIGHT -->
+
+                        <section class="content-card ai-summary">
+
+                            <span class="eyebrow">
+                                AI INSIGHT
+                            </span>
+
+                            <h2>
+                                Why this direction
+                            </h2>
+
+                            {% if data.analysis %}
+
+                                <div class="summary-text">
+                                    {{ data.analysis|linebreaksbr }}
+                                </div>
+
+                            {% else %}
+
+                                <div class="summary-text">
+                                    Your analysis is based on the competencies
+                                    demonstrated during this assessment.
+                                </div>
+
+                            {% endif %}
+
+                        </section>
+
+
+                    </aside>
+
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <div class="content-card">
+
+                <h2>
+                    No Role Analysis Available
+                </h2>
+
+                <p class="muted">
+                    No role-specific analysis was generated for this assessment.
+                    Please try another assessment.
+                </p>
+
+            </div>
+
+        {% endfor %}
+
+
+        <!-- ========================================= -->
+        <!-- ACTIONS -->
+        <!-- ========================================= -->
+
+        <div class="roadmap-actions">
+
+            <a
+                href="/dashboard/"
+                class="btn btn-outline-primary"
+            >
+                Dashboard
+            </a>
+
+            <a
+                href="/edit-profile/"
+                class="btn btn-light"
+            >
+                Update profile
+            </a>
+
+            <a
+                href="/careers/download-report/"
+                class="btn btn-primary"
+            >
+                Download report ↓
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

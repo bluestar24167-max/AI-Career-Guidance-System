@@ -1,30 +1,737 @@
 {% extends "base.html" %}
+
 {% block title %}Your Career Roadmap{% endblock %}
+
 {% block content %}
+
 <section class="roadmap-page page-enter">
+
   {% if error %}
-    <div class="alert alert-danger shadow-sm">{{ error }}</div><a href="/assessment/" class="btn btn-primary">Take assessment</a>
+
+    <div class="alert alert-danger shadow-sm">
+      {{ error }}
+    </div>
+
+    <a href="/assessment/" class="btn btn-primary">
+      Take assessment
+    </a>
+
   {% else %}
+
+    <!-- ================================================== -->
+    <!-- HERO -->
+    <!-- ================================================== -->
+
     <div class="roadmap-hero">
-      <span class="eyebrow">YOUR PERSONALISED PATH</span>
-      <h1>Prepare for <span>{{ assessment.roles_label }}</span>.</h1>
-      <p>Hi {{ student.full_name }}, this is a practical six-month plan built around your goal—not just a career suggestion.</p>
-      <div class="hero-pills"><span>Assessment: {{ assessment.score }}/{{ assessment.total_questions }}</span><span>{{ student.experience_level|default:"Beginner" }} level</span><span>24-week plan</span></div>
+
+      <span class="eyebrow">
+        YOUR PERSONALISED PATH
+      </span>
+
+      <h1>
+        Prepare for
+        <span>{{ assessment.roles_label }}</span>.
+      </h1>
+
+      <p>
+        Hi {{ student.full_name }}, this is a practical
+        learning plan built around your profile,
+        assessment performance and career goal.
+      </p>
+
+      <div class="hero-pills">
+
+        <span>
+          Assessment:
+          {{ assessment.score }}/{{ assessment.total_questions }}
+        </span>
+
+        <span>
+          {{ student.experience_level|default:"Beginner" }} level
+        </span>
+
+        <span>
+          {{ roadmap|length }} learning stages
+        </span>
+
+      </div>
+
     </div>
-    <div class="row g-4 mt-1">
-      <div class="col-lg-8"><section class="content-card roadmap-card">
-        <div class="section-heading"><div><span class="eyebrow">WHAT TO LEARN</span><h2>Your learning roadmap</h2></div><span class="roadmap-badge">{{ roadmap.lessons|length }} stages</span></div>
-        <p class="muted">{{ roadmap.weekly_plan }}</p><div class="learning-timeline">
-          {% for lesson in roadmap.lessons %}<article class="lesson-card reveal" style="--delay: {{ forloop.counter0 }}"><div class="lesson-number">0{{ lesson.number }}</div><div class="lesson-body"><span class="lesson-duration">{{ lesson.duration }}</span><h3>{{ lesson.title }}</h3><p>{{ lesson.outcome }}</p><p><strong>Do this:</strong> {{ lesson.instructions }}</p><p><strong>Project:</strong> {{ lesson.project }}</p><a class="resource-link" href="{{ lesson.url }}" target="_blank" rel="noopener noreferrer">Learn on {{ lesson.provider }} <span aria-hidden="true">↗</span></a></div></article>{% endfor %}
+
+
+    <!-- ================================================== -->
+    <!-- ROLE PERFORMANCE -->
+    <!-- ================================================== -->
+
+    {% if analysis.role_results %}
+
+    <section class="content-card roadmap-card mt-4">
+
+      <div class="section-heading">
+
+        <div>
+          <span class="eyebrow">
+            ASSESSMENT PERFORMANCE
+          </span>
+
+          <h2>
+            Your role-wise results
+          </h2>
         </div>
-      </section></div>
-      <div class="col-lg-4"><aside class="sidebar-stack">
-        <section class="content-card insight-card"><span class="eyebrow">ASSESSMENT INSIGHTS</span><h2>Strengths and priority gaps</h2>{% if analysis.strengths %}<div class="skill-cloud">{% for skill in analysis.strengths %}<span>{{ skill }}</span>{% endfor %}</div>{% endif %}{% if analysis.skill_gaps %}<p class="muted mt-3 mb-2">Focus next on:</p><div class="skill-cloud">{% for skill in analysis.skill_gaps %}<span>{{ skill }}</span>{% endfor %}</div>{% endif %}</section>
-        <section class="content-card ai-summary"><span class="eyebrow">AI INSIGHT</span><h2>Why this direction</h2><div class="summary-text">{{ ai_response|linebreaksbr }}</div></section>
-        <a href="{{ roadmap.job_search_url }}" target="_blank" rel="noopener noreferrer" class="job-cta">Explore matching roles <span>→</span></a>
-      </aside></div>
+
+      </div>
+
+
+      <div class="row g-3">
+
+        {% for role_result in analysis.role_results %}
+
+        <div class="col-md-4">
+
+          <div class="content-card h-100">
+
+            <span class="eyebrow">
+              TARGET ROLE
+            </span>
+
+            <h3 class="mt-2">
+              {{ role_result.role }}
+            </h3>
+
+            <div class="mt-3">
+
+              <strong>
+                {{ role_result.score }}%
+              </strong>
+
+            </div>
+
+            <p class="muted mt-2 mb-0">
+              {{ role_result.suitability }}
+            </p>
+
+          </div>
+
+        </div>
+
+        {% endfor %}
+
+      </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- ================================================== -->
+    <!-- BEST MATCH -->
+    <!-- ================================================== -->
+
+    {% if analysis.best_match %}
+
+    <section class="content-card ai-summary mt-4">
+
+      <span class="eyebrow">
+        CURRENT BEST MATCH
+      </span>
+
+      <h2 class="mt-2">
+        {{ analysis.best_match.role }}
+      </h2>
+
+      {% if analysis.best_match.score %}
+
+      <p class="muted">
+        Assessment score:
+        <strong>{{ analysis.best_match.score }}%</strong>
+      </p>
+
+      {% endif %}
+
+      {% if analysis.best_match.suitability %}
+
+      <p class="muted">
+        Suitability:
+        <strong>{{ analysis.best_match.suitability }}</strong>
+      </p>
+
+      {% endif %}
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- ================================================== -->
+    <!-- MAIN CONTENT -->
+    <!-- ================================================== -->
+
+    <div class="row g-4 mt-1">
+
+      <!-- ================================================= -->
+      <!-- ROADMAP -->
+      <!-- ================================================= -->
+
+      <div class="col-lg-8">
+
+        <section class="content-card roadmap-card">
+
+          <div class="section-heading">
+
+            <div>
+
+              <span class="eyebrow">
+                WHAT TO LEARN
+              </span>
+
+              <h2>
+                Your learning roadmap
+              </h2>
+
+            </div>
+
+            <span class="roadmap-badge">
+              {{ roadmap|length }} stages
+            </span>
+
+          </div>
+
+
+          <p class="muted">
+            Follow the stages in order.
+            Learn the concept, watch a focused explanation,
+            practice it, and then build something with it.
+          </p>
+
+
+          <div class="learning-timeline">
+
+
+            {% for stage in roadmap %}
+
+            <article
+              class="lesson-card reveal"
+              style="--delay: {{ forloop.counter0 }}"
+            >
+
+              <!-- ========================================= -->
+              <!-- NUMBER -->
+              <!-- ========================================= -->
+
+              <div class="lesson-number">
+
+                {% if stage.number < 10 %}
+                  0{{ stage.number }}
+                {% else %}
+                  {{ stage.number }}
+                {% endif %}
+
+              </div>
+
+
+              <div class="lesson-body">
+
+
+                <!-- ======================================= -->
+                <!-- HEADER -->
+                <!-- ======================================= -->
+
+                <div class="d-flex flex-wrap justify-content-between gap-2">
+
+                  <span class="lesson-duration">
+                    {{ stage.time }}
+                  </span>
+
+                  <span class="roadmap-badge">
+                    {{ stage.priority }}
+                  </span>
+
+                </div>
+
+
+                <span class="eyebrow d-block mt-3">
+                  {{ stage.week }}
+                </span>
+
+
+                <h3>
+                  {{ stage.skill }}
+                </h3>
+
+
+                {% if stage.goal %}
+
+                <p>
+                  <strong>Goal:</strong>
+                  {{ stage.goal }}
+                </p>
+
+                {% endif %}
+
+
+                <!-- ======================================= -->
+                <!-- CONCEPTS -->
+                <!-- ======================================= -->
+
+                {% if stage.concepts %}
+
+                <div class="mt-3">
+
+                  <p class="mb-2">
+                    <strong>Key concepts</strong>
+                  </p>
+
+                  <div class="skill-cloud">
+
+                    {% for concept in stage.concepts %}
+
+                    <span>
+                      {{ concept }}
+                    </span>
+
+                    {% endfor %}
+
+                  </div>
+
+                </div>
+
+                {% endif %}
+
+
+                <!-- ======================================= -->
+                <!-- WHY -->
+                <!-- ======================================= -->
+
+                {% if stage.reason %}
+
+                <div class="mt-4">
+
+                  <p>
+                    <strong>
+                      Why this matters:
+                    </strong>
+
+                    {{ stage.reason }}
+                  </p>
+
+                </div>
+
+                {% endif %}
+
+
+                <!-- ======================================= -->
+                <!-- LEARN -->
+                <!-- ======================================= -->
+
+                <div class="roadmap-resource-card mt-4">
+
+                  <span class="eyebrow">
+                    01 · LEARN
+                  </span>
+
+                  <h4>
+                    Build the foundation
+                  </h4>
+
+                  {% if stage.learn %}
+
+                  <p>
+                    {{ stage.learn }}
+                  </p>
+
+                  {% else %}
+
+                  <p>
+                    Study the core concepts required
+                    for this skill.
+                  </p>
+
+                  {% endif %}
+
+                  {% if stage.learn_url %}
+
+                  <a
+                    class="resource-link"
+                    href="{{ stage.learn_url }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Learn the concept ↗
+                  </a>
+
+                  {% endif %}
+
+                </div>
+
+
+                <!-- ======================================= -->
+                <!-- WATCH -->
+                <!-- ======================================= -->
+
+                <div class="roadmap-resource-card mt-3">
+
+                  <span class="eyebrow">
+                    02 · WATCH
+                  </span>
+
+                  <h4>
+                    Watch a focused explanation
+                  </h4>
+
+                  <p>
+                    Search YouTube for:
+                    <strong>{{ stage.watch_query }}</strong>
+                  </p>
+
+                  {% if stage.watch %}
+
+                  <a
+                    class="resource-link"
+                    href="{{ stage.watch }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Watch on YouTube ↗
+                  </a>
+
+                  {% endif %}
+
+                </div>
+
+
+                <!-- ======================================= -->
+                <!-- PRACTICE -->
+                <!-- ======================================= -->
+
+                <div class="roadmap-resource-card mt-3">
+
+                  <span class="eyebrow">
+                    03 · PRACTICE
+                  </span>
+
+                  <h4>
+                    Practice the skill
+                  </h4>
+
+                  {% if stage.practice %}
+
+                  <p>
+                    {{ stage.practice }}
+                  </p>
+
+                  {% endif %}
+
+                  {% if stage.practice_provider %}
+
+                  <p class="muted mb-2">
+
+                    Recommended platform:
+                    <strong>
+                      {{ stage.practice_provider }}
+                    </strong>
+
+                  </p>
+
+                  {% endif %}
+
+                  {% if stage.practice_url %}
+
+                  <a
+                    class="resource-link"
+                    href="{{ stage.practice_url }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Practice now ↗
+                  </a>
+
+                  {% endif %}
+
+                </div>
+
+
+                <!-- ======================================= -->
+                <!-- TASKS -->
+                <!-- ======================================= -->
+
+                {% if stage.tasks %}
+
+                <div class="roadmap-resource-card mt-3">
+
+                  <span class="eyebrow">
+                    PRACTICAL TASKS
+                  </span>
+
+                  <h4>
+                    Apply what you learned
+                  </h4>
+
+                  <ul>
+
+                    {% for task in stage.tasks %}
+
+                    <li>
+                      {{ task }}
+                    </li>
+
+                    {% endfor %}
+
+                  </ul>
+
+                </div>
+
+                {% endif %}
+
+
+                <!-- ======================================= -->
+                <!-- PROJECT -->
+                <!-- ======================================= -->
+
+                <div class="roadmap-resource-card mt-3">
+
+                  <span class="eyebrow">
+                    04 · PROJECT
+                  </span>
+
+                  <h4>
+                    Build something real
+                  </h4>
+
+                  {% if stage.project %}
+
+                  <p>
+                    <strong>
+                      Project:
+                    </strong>
+
+                    {{ stage.project }}
+                  </p>
+
+                  {% endif %}
+
+                  {% if stage.project_resource_name %}
+
+                  <p class="muted">
+                    Reference:
+                    {{ stage.project_resource_name }}
+                  </p>
+
+                  {% endif %}
+
+                  {% if stage.project_url %}
+
+                  <a
+                    class="resource-link"
+                    href="{{ stage.project_url }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Explore project references ↗
+                  </a>
+
+                  {% endif %}
+
+                </div>
+
+
+                <!-- ======================================= -->
+                <!-- OUTCOME -->
+                <!-- ======================================= -->
+
+                {% if stage.outcome %}
+
+                <div class="mt-4">
+
+                  <p>
+
+                    <strong>
+                      After this stage:
+                    </strong>
+
+                    {{ stage.outcome }}
+
+                  </p>
+
+                </div>
+
+                {% endif %}
+
+
+              </div>
+
+            </article>
+
+            {% empty %}
+
+            <div class="alert alert-info">
+
+              Your personalized roadmap is currently
+              unavailable. Please try the assessment again.
+
+            </div>
+
+            {% endfor %}
+
+
+          </div>
+
+        </section>
+
+      </div>
+
+
+      <!-- ================================================= -->
+      <!-- SIDEBAR -->
+      <!-- ================================================= -->
+
+      <div class="col-lg-4">
+
+        <aside class="sidebar-stack">
+
+
+          <!-- ============================================== -->
+          <!-- STRENGTHS -->
+          <!-- ============================================== -->
+
+          <section class="content-card insight-card">
+
+            <span class="eyebrow">
+              ASSESSMENT INSIGHTS
+            </span>
+
+            <h2>
+              Strengths and priority gaps
+            </h2>
+
+
+            {% if analysis.strengths %}
+
+            <p class="muted mt-3 mb-2">
+              Your strengths
+            </p>
+
+            <div class="skill-cloud">
+
+              {% for skill in analysis.strengths %}
+
+              <span>
+                {{ skill }}
+              </span>
+
+              {% endfor %}
+
+            </div>
+
+            {% endif %}
+
+
+            {% if analysis.skill_gaps %}
+
+            <p class="muted mt-4 mb-2">
+              Focus next on
+            </p>
+
+            <div class="skill-cloud">
+
+              {% for skill in analysis.skill_gaps %}
+
+              <span>
+                {{ skill }}
+              </span>
+
+              {% endfor %}
+
+            </div>
+
+            {% endif %}
+
+          </section>
+
+
+          <!-- ============================================== -->
+          <!-- AI SUMMARY -->
+          <!-- ============================================== -->
+
+          <section class="content-card ai-summary">
+
+            <span class="eyebrow">
+              AI INSIGHT
+            </span>
+
+            <h2>
+              Why this direction
+            </h2>
+
+            <div class="summary-text">
+
+              {{ ai_response|linebreaksbr }}
+
+            </div>
+
+          </section>
+
+
+          <!-- ============================================== -->
+          <!-- JOB SEARCH -->
+          <!-- ============================================== -->
+
+          {% if roadmap.0.role %}
+
+          <a
+            href="https://www.linkedin.com/jobs/search/?keywords={{ roadmap.0.role|urlencode }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="job-cta"
+          >
+            Explore matching roles
+            <span>→</span>
+          </a>
+
+          {% endif %}
+
+
+        </aside>
+
+      </div>
+
     </div>
-    <div class="roadmap-actions"><a href="/dashboard/" class="btn btn-outline-primary">Dashboard</a><a href="/edit-profile/" class="btn btn-light">Update profile</a><a href="/careers/download-report/" class="btn btn-primary">Download report <span>↓</span></a></div>
+
+
+    <!-- ================================================== -->
+    <!-- ACTIONS -->
+    <!-- ================================================== -->
+
+    <div class="roadmap-actions">
+
+      <a
+        href="/dashboard/"
+        class="btn btn-outline-primary"
+      >
+        Dashboard
+      </a>
+
+
+      <a
+        href="/edit-profile/"
+        class="btn btn-light"
+      >
+        Update profile
+      </a>
+
+
+      <a
+        href="/careers/download-report/"
+        class="btn btn-primary"
+      >
+        Download Career Report
+        <span>↓</span>
+      </a>
+
+    </div>
+
+
   {% endif %}
+
 </section>
+
 {% endblock %}

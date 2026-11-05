@@ -1,1 +1,207 @@
-{% extends "base.html" %}{% block title %}Role-specific assessment{% endblock %}{% block content %}<section class="page-enter"><div class="page-heading"><span class="eyebrow">ROLE-SPECIFIC ASSESSMENT</span><h1>Test the skills your target roles require.</h1><p>{% for role in roles %}<span class="roadmap-badge">{{ role }}</span> {% endfor %}</p></div><form method="post">{% csrf_token %}{% for question in questions %}<article class="content-card mb-3"><span class="eyebrow">{{ question.skill }}</span><h2 class="h5 mt-2">{{ forloop.counter }}. {{ question.question }}</h2>{% for option in question.options %}<label class="form-check mb-2"><input class="form-check-input" type="radio" name="q{{ forloop.parentloop.counter0 }}" value="{{ option }}" required><span class="form-check-label">{{ option }}</span></label>{% endfor %}</article>{% endfor %}<button class="btn btn-primary">Submit assessment <span>→</span></button></form></section>{% endblock %}
+{% extends "base.html" %}
+
+{% block title %}Role-specific assessment{% endblock %}
+
+{% block content %}
+
+<section class="page-enter">
+
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
+
+    <div class="page-heading">
+
+        <span class="eyebrow">
+            ROLE-SPECIFIC ASSESSMENT
+        </span>
+
+        <h1>
+            Test the skills your target roles require.
+        </h1>
+
+        <p>
+            Each selected role has its own set of questions.
+            Your performance will be evaluated separately for
+            every role.
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         ROLE SUMMARY
+    ====================================================== -->
+
+    <div class="content-card mb-4">
+
+        <span class="eyebrow">
+            SELECTED TARGET ROLES
+        </span>
+
+        <div class="mt-3">
+
+            {% for role in roles %}
+
+                <span class="roadmap-badge me-2 mb-2">
+                    {{ role }}
+                </span>
+
+            {% endfor %}
+
+        </div>
+
+        <p class="text-muted mt-3 mb-0">
+
+            {% if roles|length == 1 %}
+                You are being assessed for one target role.
+            {% else %}
+                Each role contains 10 role-specific questions.
+                Your scores will be calculated separately.
+            {% endif %}
+
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         ASSESSMENT FORM
+    ====================================================== -->
+
+    <form method="post">
+
+        {% csrf_token %}
+
+
+        <!-- =================================================
+             QUESTIONS
+        ================================================== -->
+
+        {% for question in questions %}
+
+            <!-- ---------------------------------------------
+                 Detect role changes visually
+            ---------------------------------------------- -->
+
+            
+
+
+            <article class="content-card mb-4">
+
+                <!-- Role badge -->
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                    <span class="roadmap-badge">
+
+                        {{ question.role }}
+
+                    </span>
+
+                    <span class="eyebrow">
+
+                        Question {{ forloop.counter }}
+
+                    </span>
+
+                </div>
+
+
+                <!-- Skill -->
+
+                <span class="eyebrow d-block mt-3">
+
+                    {{ question.skill }}
+
+                </span>
+
+
+                <!-- Question -->
+
+                <h2 class="h5 mt-2">
+
+                    {{ question.question }}
+
+                </h2>
+
+
+                <!-- Options -->
+
+                <div class="mt-3">
+
+                    {% for option in question.options %}
+
+                        <label class="form-check mb-3">
+
+                            <input
+                                class="form-check-input"
+                                type="radio"
+                                name="q{{ forloop.parentloop.counter0 }}"
+                                value="{{ option }}"
+                                required
+                            >
+
+                            <span class="form-check-label">
+
+                                {{ option }}
+
+                            </span>
+
+                        </label>
+
+                    {% endfor %}
+
+                </div>
+
+            </article>
+
+        {% endfor %}
+
+
+        <!-- =================================================
+             SUBMIT
+        ================================================== -->
+
+        <div class="content-card mt-4">
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+                <div>
+
+                    <span class="eyebrow">
+                        READY TO SUBMIT?
+                    </span>
+
+                    <p class="mb-0 mt-2 text-muted">
+
+                        Make sure you have answered every question
+                        before submitting your assessment.
+
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+
+                    Submit assessment
+
+                    <span>
+                        →
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</section>
+
+{% endblock %}

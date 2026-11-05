@@ -8,4 +8,5 @@ urlpatterns = [
     path("dashboard/", views.dashboard, name="dashboard"),
     path("profile/", views.profile, name="profile"),
     path("edit-profile/", views.edit_profile, name="edit_profile"),
+    path("google-login-complete/",views.google_login_complete,name="google_login_complete"),
 ]

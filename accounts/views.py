@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from students.forms import StudentRegistrationForm
 from students.models import Student
+from django.contrib.auth.decorators import login_required
 
 
 def home(request):
@@ -95,8 +96,11 @@ def edit_profile(request):
         student.city = request.POST.get("city")
         student.skills = request.POST.get("skills")
         student.interests = request.POST.get("interests")
+        student.year = request.POST.get("year")
+        student.experience_level = request.POST.get("experience_level") or "Beginner"
 
         student.save()
+        
 
         return redirect("/profile/")
 
@@ -110,3 +114,30 @@ def logout_page(request):
     request.session.flush()
 
     return redirect("/login/")
+
+@login_required
+def google_login_complete(request):
+
+    from students.models import Student
+
+    email = request.user.email
+    full_name = request.user.get_full_name() or request.user.username or "Google User"
+
+    try:
+        # Check whether a CareerFlow Student already exists
+        student = Student.objects.get(email=email)
+
+    except Student.DoesNotExist:
+
+        # Create a new CareerFlow Student for the Google user
+        student = Student.objects.create(
+            full_name=full_name,
+            email=email,
+            password="GOOGLE_ACCOUNT"
+        )
+
+    # Create the same session used by normal login
+    request.session["student_id"] = student.id
+    request.session["student_name"] = student.full_name
+
+    return redirect("/dashboard/")
